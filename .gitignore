@@ -1,0 +1,36 @@
+# For React
+
+# dependencies
+fe/node_modules
+fe/.pnp
+fe/.pnp.js
+
+# testing
+fe/coverage
+
+# production
+fe/build
+
+# misc
+fe/.DS_Store
+fe/.env.local
+fe/.env.development.local
+fe/.env.test.local
+fe/.env.production.local
+
+fe/npm-debug.log*
+fe/yarn-debug.log*
+fe/yarn-error.log*
+
+# For Symfony
+
+###> symfony/framework-bundle ###
+be/.env
+be/.env.local
+be/.env.local.php
+be/.env.*.local
+be/config/secrets/prod/prod.decrypt.private.php
+be/public/bundles/
+be/var/
+be/vendor/
+###< symfony/framework-bundle ###
