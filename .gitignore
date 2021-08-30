@@ -22,6 +22,8 @@ fe/npm-debug.log*
 fe/yarn-debug.log*
 fe/yarn-error.log*
 
+#########################################################
+
 # For Symfony
 
 ###> symfony/framework-bundle ###
