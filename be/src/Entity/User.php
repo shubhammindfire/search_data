@@ -2,17 +2,17 @@
 
 namespace App\Entity;
 
-use App\Repository\AdminRepository;
+use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
- * @ORM\Entity(repositoryClass=AdminRepository::class)
- * @ORM\Table(name="admin")
- * @UniqueEntity("name", message="username for each user must be unique")
+ * @ORM\Entity(repositoryClass=UserRepository::class)
+ * @ORM\Table(name="user")
+ * @UniqueEntity("username", message="username for each user must be unique")
  */
-class Admin
+class User
 {
     /**
      * @ORM\Id
@@ -25,17 +25,23 @@ class Admin
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank()
      */
-    private $name;
+    private $username;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank()
      * @Assert\Regex(
      *      pattern="/(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9]).{7,}/",
-     *      message="Passwords must be at least 7 characters long and contain at least one digit    , one uppercaseletter, and one lowercase letter"
+     *      message="Passwords must be at least 7 characters long and contain at least one digit , one uppercaseletter, and one lowercase letter" 
      * )
      */
     private $password;
+
+    /**
+     * @ORM\Column(name="is_admin", type="boolean")
+     * @Assert\NotBlank()
+     */
+    private $isAdmin;
 
     /**
      * @ORM\Column(name="created_at", type="datetime")
@@ -52,14 +58,14 @@ class Admin
         return $this->id;
     }
 
-    public function getName(): ?string
+    public function getUsername(): ?string
     {
-        return $this->name;
+        return $this->username;
     }
 
-    public function setName(string $name): self
+    public function setUsername(string $username): self
     {
-        $this->name = $name;
+        $this->username = $username;
 
         return $this;
     }
@@ -72,6 +78,18 @@ class Admin
     public function setPassword(string $password): self
     {
         $this->password = $password;
+
+        return $this;
+    }
+
+    public function getIsAdmin(): ?bool
+    {
+        return $this->isAdmin;
+    }
+
+    public function setIsAdmin(bool $isAdmin): self
+    {
+        $this->isAdmin = $isAdmin;
 
         return $this;
     }
