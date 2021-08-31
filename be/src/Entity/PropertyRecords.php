@@ -4,10 +4,13 @@ namespace App\Entity;
 
 use App\Repository\PropertyRecordsRepository;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Core\Annotation\ApiResource;
 
 /**
  * @ORM\Entity(repositoryClass=PropertyRecordsRepository::class)
  * @ORM\Table(name="property_records")
+ * @ORM\HasLifecycleCallbacks
+ * @ApiResource()
  */
 class PropertyRecords
 {
@@ -19,7 +22,7 @@ class PropertyRecords
     private $id;
 
     /**
-     * @ORM\Column(type="blob", nullable=true)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $image;
 
@@ -48,6 +51,16 @@ class PropertyRecords
      */
     private $description;
 
+    /**
+     * @ORM\Column(name="created_at", type="datetime")
+     */
+    private $createdAt;
+
+    /**
+     * @ORM\Column(name="updated_at", type="datetime")
+     */
+    private $updatedAt;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -58,7 +71,7 @@ class PropertyRecords
         return $this->image;
     }
 
-    public function setImage($image): self
+    public function setImage(string $image): self
     {
         $this->image = $image;
 
@@ -123,5 +136,42 @@ class PropertyRecords
         $this->description = $description;
 
         return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt($createdAt): self
+    {
+        $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt($updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * @ORM\PrePersist
+     * @ORM\PreUpdate
+     */
+    public function updatedTimestamps(): void
+    {
+        $currentDateTime = new \DateTime('now');
+        $this->setUpdatedAt($currentDateTime);
+        if ($this->getCreatedAt() === null) {
+            $this->setCreatedAt($currentDateTime);
+        }
     }
 }

@@ -36,3 +36,7 @@ be/public/bundles/
 be/var/
 be/vendor/
 ###< symfony/framework-bundle ###
+
+###> lexik/jwt-authentication-bundle ###
+be/config/jwt/*.pem
+###< lexik/jwt-authentication-bundle ###
