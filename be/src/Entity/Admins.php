@@ -8,12 +8,17 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=AdminsRepository::class)
  * @ORM\Table(name="admins")
  * @ORM\HasLifecycleCallbacks
- * @ApiResource()
+ * @ApiResource(
+ *      normalizationContext={
+ *          "groups"={"read"} 
+ *      } 
+ * )
  * @UniqueEntity(fields={"email"}, message="email for each user must be unique")
  */
 class Admins implements UserInterface
@@ -22,18 +27,21 @@ class Admins implements UserInterface
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank()
+     * @Groups({"read"})
      */
     private $firstname;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank()
+     * @Groups({"read"})
      */
     private $lastname;
 
@@ -43,6 +51,7 @@ class Admins implements UserInterface
      * @Assert\Email(
      *      message="Please enter a valid email"
      * )
+     * @Groups({"read"})
      */
     private $email;
 
