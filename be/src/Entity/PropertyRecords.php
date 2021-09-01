@@ -5,12 +5,28 @@ namespace App\Entity;
 use App\Repository\PropertyRecordsRepository;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 
 /**
  * @ORM\Entity(repositoryClass=PropertyRecordsRepository::class)
  * @ORM\Table(name="property_records")
  * @ORM\HasLifecycleCallbacks
  * @ApiResource()
+ * @ApiFilter(SearchFilter::class, properties={
+ *      "section": "exact",
+ *      "town": "exact",
+ *      "rng": "exact",
+ *      "subdivision": "partial"
+ * })
+ * @ApiFilter(OrderFilter::class, properties={
+ *      "section": "ASC",
+ *      "town": "ASC",
+ *      "rng": "ASC",
+ *      "subdivision": "ASC",
+ *      "description": "ASC",
+ * })
  */
 class PropertyRecords
 {
