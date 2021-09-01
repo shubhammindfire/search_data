@@ -32,8 +32,8 @@ class PasswordHashSubscriber implements EventSubscriberInterface
 		$admin = $event->getControllerResult();
 		$method = $event->getRequest()->getMethod();
 
-		// if controller is not user or not post method then do nothing
-		if (!$admin instanceof Admins || Request::METHOD_POST !== $method)
+		// if controller is not user or not post or patch method then do nothing
+		if (!$admin instanceof Admins || (Request::METHOD_POST !== $method && Request::METHOD_PATCH !== $method))
 			return;
 
 		// if controller is user and method is post then encode password
