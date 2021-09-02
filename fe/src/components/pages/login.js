@@ -1,16 +1,21 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { Link, Redirect, useHistory } from "react-router-dom";
-import { Button, Card } from "reactstrap";
+import { Redirect, useHistory } from "react-router-dom";
+import { Button } from "reactstrap";
 import TextField from "../widgets/textField";
-import { LOGIN_URL, REGISTER_ROUTE } from "./../../constants.js";
-// import { useSelector } from "react-redux";
-// import checkSessionExpired from "../../utils/checkSessionExpired";
-import "./../../styles/login.css";
+import { LOGIN_URL, ADMIN_DASHBOARD_ROUTE } from "./../../constants.js";
+import { useSelector, useDispatch } from "react-redux";
+import checkSessionExpired from "./../utils/checkSessionExpired";
 import { validateEmail, validatePassword } from "../utils/validate";
+import { setAuthJwt } from "./../../redux/auth/authActions";
 
-function Login() {
-    //     const jwt = useSelector((state) => state.localAuthReducer.jwt);
+function Login(props) {
+    const isSessionExpired =
+        props.location.state !== undefined
+            ? props.location.state.isSessionExpired
+            : false;
+    const dispatch = useDispatch();
+    const jwt = useSelector((state) => state.authReducer.jwt);
     const history = useHistory();
 
     const [email, setEmail] = useState("");
@@ -63,7 +68,7 @@ function Login() {
                 .then((response) => {
                     console.log(`Response: ${JSON.stringify(response)}`);
                     if (response.status === 200) {
-                        // dispatch(setLocalAuthJwt(response.data));
+                        dispatch(setAuthJwt(response.data));
                         const ttl = 3600000; // time for expiry in milliseconds
                         const itemToLocalStorage = {
                             value: response.data,
@@ -73,6 +78,9 @@ function Login() {
                             "session-jwt",
                             JSON.stringify(itemToLocalStorage)
                         );
+                        setTimeout(() => {
+                            history.push({ ADMIN_DASHBOARD_ROUTE });
+                        }, 1500);
                     } else {
                         setLoginError(response.message);
                     }
@@ -90,53 +98,58 @@ function Login() {
     }
 
     return (
-        <div className="d-flex flex-column justify-content-center align-items-center">
-            <p className="mt-4 fs-1">Login</p>
-            <div className="rounded-3 shadow p-4">
-                <form onSubmit={handleLogin}>
-                    <TextField
-                        label="Email"
-                        placeholder="Enter email"
-                        type="text"
-                        onChange={handleEmailChange}
-                    />
-                    {emailError !== null ? (
-                        <p className="text-danger">{emailError}</p>
-                    ) : null}
-                    <TextField
-                        label="Password"
-                        placeholder="Enter password"
-                        type="password"
-                        onChange={handlePasswordChange}
-                    />
-                    {passwordError !== null ? (
-                        <p className="text-danger">{passwordError}</p>
-                    ) : null}
-                    {loginError !== null ? (
-                        <p className="text-danger">{loginError}</p>
-                    ) : null}
-                    <Button
-                        type="submit"
-                        color="primary"
-                        className="mt-2 float-end"
-                    >
-                        Login
-                    </Button>
-                    {successMessage !== null ? (
-                        <p className="text-success text-center">
-                            {successMessage}
+        <>
+            {jwt !== null && checkSessionExpired() === false ? (
+                // if the admin is logged in and session is not expired then redirect to admin dashboard
+                <Redirect to={ADMIN_DASHBOARD_ROUTE} />
+            ) : (
+                <div className="d-flex flex-column justify-content-center align-items-center">
+                    {isSessionExpired ? (
+                        <p className="text-danger">
+                            Session Expired Login again
                         </p>
                     ) : null}
-                </form>
-            </div>
-
-            <div className="mt-2">
-                Not a registered user?
-                <Link to={REGISTER_ROUTE} className="nounderline">
-                    <p className="d-inline"> Register Instead</p>
-                </Link>
-            </div>
-        </div>
+                    <p className="mt-4 fs-1">Login</p>
+                    <div className="rounded-3 shadow p-4">
+                        <form onSubmit={handleLogin}>
+                            <TextField
+                                label="Email"
+                                placeholder="Enter email"
+                                type="text"
+                                onChange={handleEmailChange}
+                            />
+                            {emailError !== null ? (
+                                <p className="text-danger">{emailError}</p>
+                            ) : null}
+                            <TextField
+                                label="Password"
+                                placeholder="Enter password"
+                                type="password"
+                                onChange={handlePasswordChange}
+                            />
+                            {passwordError !== null ? (
+                                <p className="text-danger">{passwordError}</p>
+                            ) : null}
+                            {loginError !== null ? (
+                                <p className="text-danger">{loginError}</p>
+                            ) : null}
+                            <Button
+                                type="submit"
+                                color="primary"
+                                className="mt-2 float-end"
+                            >
+                                Login
+                            </Button>
+                            {successMessage !== null ? (
+                                <p className="text-success text-center">
+                                    {successMessage}
+                                </p>
+                            ) : null}
+                        </form>
+                    </div>
+                </div>
+            )}
+        </>
     );
 }
 
