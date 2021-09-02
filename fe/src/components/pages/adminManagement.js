@@ -9,12 +9,20 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPen, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import "./../../styles/adminManagement.css";
 import { Button } from "reactstrap";
+import handleDeleteAdmin from "./../utils/deleteAdmin";
+import LoadingModal from "../widgets/loadingModel";
+import handleAddAdmin from "../utils/addAdmin";
+import AddAdminModal from "../widgets/addAdminModal";
 
 const AdminManagement = () => {
     const dispatch = useDispatch();
     const admins = useSelector((state) => state.adminReducer.admins);
     const jwt = useSelector((state) => state.authReducer.jwt);
+    const currentAdmin = useSelector((state) => state.authReducer.currentAdmin);
     const [isSessionExpired, setIsSessionExpired] = useState(false);
+
+    const [showLoadingModal, setShowLoadingModal] = useState(false);
+    const [showAddAdminModal, setShowAddAdminModal] = useState(false);
 
     useEffect(() => {
         axios
@@ -50,9 +58,14 @@ const AdminManagement = () => {
                     <ProjectNavbar />
                     <div className="m-4">
                         <h2>Admins</h2>
+                        {showLoadingModal ? <LoadingModal /> : null}
                         <Button
                             className="float-end bg-success border border-0"
                             title="Add a new Admin"
+                            // onClick={(e) => {
+                            //     e.preventDefault();
+                            //     setShowAddAdminModal(true);
+                            // }}
                         >
                             New
                         </Button>
@@ -70,25 +83,40 @@ const AdminManagement = () => {
                                 {admins.map((admin, index) => {
                                     return (
                                         <tr key={admin.email}>
-                                            <th scope="row">
+                                            <td>
                                                 <button className="iconButton">
                                                     <FontAwesomeIcon
                                                         icon={faPen}
                                                         color="#32A6E9"
                                                     />
                                                 </button>
-                                            </th>
+                                            </td>
                                             <td>{admin.firstname}</td>
                                             <td>{admin.lastname}</td>
                                             <td>{admin.email}</td>
-                                            <th scope="row">
-                                                <button className="iconButton">
-                                                    <FontAwesomeIcon
-                                                        icon={faTrashAlt}
-                                                        color="#FF0000"
-                                                    />
-                                                </button>
-                                            </th>
+                                            {/* current admin can't delete oneself therefore delete icon is not shown */}
+                                            <td>
+                                                {currentAdmin.email !==
+                                                admin.email ? (
+                                                    <button
+                                                        className="iconButton"
+                                                        onClick={(e) =>
+                                                            handleDeleteAdmin(
+                                                                index,
+                                                                admin.id,
+                                                                jwt,
+                                                                setShowLoadingModal,
+                                                                dispatch
+                                                            )
+                                                        }
+                                                    >
+                                                        <FontAwesomeIcon
+                                                            icon={faTrashAlt}
+                                                            color="#FF0000"
+                                                        />
+                                                    </button>
+                                                ) : null}
+                                            </td>
                                         </tr>
                                     );
                                 })}

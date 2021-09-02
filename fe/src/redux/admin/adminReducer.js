@@ -2,7 +2,7 @@ import {
     ADD_ADMIN,
     ADD_ALL_ADMINS,
     EDIT_ADMIN,
-    REMOVE_ADMIN,
+    REMOVE_ADMIN_BY_INDEX,
     REMOVE_ALL_ADMINS,
 } from "./adminTypes.js";
 
@@ -27,7 +27,7 @@ const adminReducer = (state = initialState, action) => {
                 ...state,
                 admins: [...state.admins, ...action.payload],
             };
-        case REMOVE_ADMIN:
+        case REMOVE_ADMIN_BY_INDEX:
             return {
                 ...state,
                 admins: [

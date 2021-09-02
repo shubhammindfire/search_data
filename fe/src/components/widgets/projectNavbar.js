@@ -14,7 +14,10 @@ import {
     LOGIN_ROUTE,
     PROPERTY_RECORDS_MANAGEMENT_ROUTE,
 } from "../../constants";
-import { setAuthJwt } from "./../../redux/auth/authActions";
+import {
+    removeAuthJwt,
+    removeCurrentAdmin,
+} from "./../../redux/auth/authActions";
 
 const ProjectNavbar = () => {
     const dispatch = useDispatch();
@@ -24,8 +27,10 @@ const ProjectNavbar = () => {
 
     function handleLogout(e) {
         e.preventDefault();
-        dispatch(setAuthJwt(null));
+        dispatch(removeAuthJwt());
+        dispatch(removeCurrentAdmin());
         localStorage.removeItem("session-jwt");
+        localStorage.removeItem("current-admin");
     }
 
     return (

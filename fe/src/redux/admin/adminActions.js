@@ -1,4 +1,10 @@
-import { ADD_ADMIN, EDIT_ADMIN, ADD_ALL_ADMINS, REMOVE_ADMIN, REMOVE_ALL_ADMINS } from "./adminTypes.js";
+import {
+    ADD_ADMIN,
+    EDIT_ADMIN,
+    ADD_ALL_ADMINS,
+    REMOVE_ALL_ADMINS,
+    REMOVE_ADMIN_BY_INDEX,
+} from "./adminTypes.js";
 
 export const addAllAdmins = (admins = []) => {
     return {
@@ -27,9 +33,9 @@ export const editAdmin = (newAdmin = {}) => {
     };
 };
 
-export const removeAdmin = (index) => {
+export const removeAdminByIndex = (index) => {
     return {
-        type: REMOVE_ADMIN,
+        type: REMOVE_ADMIN_BY_INDEX,
         payload: index, // here payload is the index of the admin to be deleted
     };
 };

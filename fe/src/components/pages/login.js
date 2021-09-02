@@ -7,7 +7,7 @@ import { LOGIN_URL, ADMIN_MANAGEMENT_ROUTE } from "./../../constants.js";
 import { useSelector, useDispatch } from "react-redux";
 import checkSessionExpired from "./../utils/checkSessionExpired";
 import { validateEmail, validatePassword } from "../utils/validate";
-import { setAuthJwt } from "./../../redux/auth/authActions";
+import { addCurrentAdmin, setAuthJwt } from "./../../redux/auth/authActions";
 
 function Login(props) {
     const isSessionExpired =
@@ -69,14 +69,23 @@ function Login(props) {
                     console.log(`Response: ${JSON.stringify(response)}`);
                     if (response.status === 200) {
                         dispatch(setAuthJwt(response.data));
+                        dispatch(addCurrentAdmin({ email: email }));
                         const ttl = 3600000; // time for expiry in milliseconds
-                        const itemToLocalStorage = {
+                        const jwtToLocalStorage = {
                             value: response.data,
+                            expiry: new Date().getTime() + ttl,
+                        };
+                        const currentAdminToLocalStorage = {
+                            value: { email: email },
                             expiry: new Date().getTime() + ttl,
                         };
                         localStorage.setItem(
                             "session-jwt",
-                            JSON.stringify(itemToLocalStorage)
+                            JSON.stringify(jwtToLocalStorage)
+                        );
+                        localStorage.setItem(
+                            "current-admin",
+                            JSON.stringify(currentAdminToLocalStorage)
                         );
                         setTimeout(() => {
                             history.push({ ADMIN_MANAGEMENT_ROUTE });

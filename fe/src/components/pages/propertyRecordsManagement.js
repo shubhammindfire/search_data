@@ -54,7 +54,12 @@ const PropertyRecordsManagement = () => {
                     <ProjectNavbar />
                     <div className="m-4">
                         <h2>Property Records</h2>
-                        <Button className="float-end bg-success border border-0" title="Add a new Property Record">New</Button>
+                        <Button
+                            className="float-end bg-success border border-0"
+                            title="Add a new Property Record"
+                        >
+                            New
+                        </Button>
                         <table className="table table-responsive">
                             <thead>
                                 <tr>
@@ -73,14 +78,14 @@ const PropertyRecordsManagement = () => {
                                     (propertyRecord, index) => {
                                         return (
                                             <tr key={propertyRecord.id}>
-                                                <th scope="row">
+                                                <td>
                                                     <button className="iconButton">
                                                         <FontAwesomeIcon
                                                             icon={faPen}
                                                             color="#32A6E9"
                                                         />
                                                     </button>
-                                                </th>
+                                                </td>
                                                 <td>{propertyRecord.image}</td>
                                                 <td>
                                                     {propertyRecord.section}
@@ -93,14 +98,14 @@ const PropertyRecordsManagement = () => {
                                                 <td>
                                                     {propertyRecord.description}
                                                 </td>
-                                                <th scope="row">
+                                                <td>
                                                     <button className="iconButton">
                                                         <FontAwesomeIcon
                                                             icon={faTrashAlt}
                                                             color="#FF0000"
                                                         />
                                                     </button>
-                                                </th>
+                                                </td>
                                             </tr>
                                         );
                                     }

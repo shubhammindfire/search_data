@@ -13,7 +13,7 @@ import {
     SEARCH_ROUTE,
 } from "./constants.js";
 import { useDispatch } from "react-redux";
-import { setAuthJwt } from "./redux/auth/authActions";
+import { addCurrentAdmin, setAuthJwt } from "./redux/auth/authActions";
 import AdminManagement from "./components/pages/adminManagement";
 import PropertyRecordsManagement from "./components/pages/propertyRecordsManagement.js";
 import Search from "./components/pages/search.js";
@@ -32,6 +32,12 @@ function App() {
         session_jwt.expiry > new Date().getTime()
     ) {
         dispatch(setAuthJwt(session_jwt.value.token));
+
+        // if jwt is available then we can check and store the current admin as well
+        let current_admin = localStorage.getItem("current-admin");
+        current_admin =
+            current_admin !== null ? JSON.parse(current_admin) : null;
+        dispatch(addCurrentAdmin(current_admin.value));
     }
 
     return (
