@@ -3,7 +3,7 @@ import axios from "axios";
 import { Redirect, useHistory } from "react-router-dom";
 import { Button } from "reactstrap";
 import TextField from "../widgets/textField";
-import { LOGIN_URL, ADMIN_DASHBOARD_ROUTE } from "./../../constants.js";
+import { LOGIN_URL, ADMIN_MANAGEMENT_ROUTE } from "./../../constants.js";
 import { useSelector, useDispatch } from "react-redux";
 import checkSessionExpired from "./../utils/checkSessionExpired";
 import { validateEmail, validatePassword } from "../utils/validate";
@@ -79,7 +79,7 @@ function Login(props) {
                             JSON.stringify(itemToLocalStorage)
                         );
                         setTimeout(() => {
-                            history.push({ ADMIN_DASHBOARD_ROUTE });
+                            history.push({ ADMIN_MANAGEMENT_ROUTE });
                         }, 1500);
                     } else {
                         setLoginError(response.message);
@@ -101,7 +101,7 @@ function Login(props) {
         <>
             {jwt !== null && checkSessionExpired() === false ? (
                 // if the admin is logged in and session is not expired then redirect to admin dashboard
-                <Redirect to={ADMIN_DASHBOARD_ROUTE} />
+                <Redirect to={ADMIN_MANAGEMENT_ROUTE} />
             ) : (
                 <div className="d-flex flex-column justify-content-center align-items-center">
                     {isSessionExpired ? (
