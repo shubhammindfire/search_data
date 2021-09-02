@@ -1,0 +1,7 @@
+.nounderline {
+    text-decoration: none !important;
+}
+
+.password-error-message {
+    max-width: 300px;
+}
