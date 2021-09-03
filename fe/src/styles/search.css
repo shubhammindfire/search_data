@@ -1,0 +1,8 @@
+.nounderline {
+    text-decoration: none;
+}
+
+.search-input {
+    display: inline !important;
+    width: auto !important;
+}

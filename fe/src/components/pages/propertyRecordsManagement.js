@@ -15,6 +15,7 @@ import handleDeletePropertyRecord from "../utils/deletePropertyRecord";
 import LoadingModal from "../widgets/loadingModel";
 import AddPropertyRecordModal from "../widgets/addPropertyRecordModal";
 import ImageModal from "../widgets/imageModel";
+import EditPropertyRecordModal from "../widgets/editPropertyRecordModal";
 
 const PropertyRecordsManagement = () => {
     const dispatch = useDispatch();
@@ -28,6 +29,10 @@ const PropertyRecordsManagement = () => {
     const [showLoadingModal, setShowLoadingModal] = useState(false);
     const [showAddPropertyRecordModal, setShowAddPropertyRecordModal] =
         useState(false);
+    const [showEditPropertyRecordModal, setShowEditPropertyRecordModal] =
+        useState(false);
+    const [currentEditPropertyRecordIndex, setCurrentEditPropertyRecordIndex] =
+        useState(null);
 
     useEffect(() => {
         axios
@@ -75,6 +80,20 @@ const PropertyRecordsManagement = () => {
                                 propertyRecords={propertyRecords}
                             />
                         ) : null}
+                        {showEditPropertyRecordModal ? (
+                            <EditPropertyRecordModal
+                                setShowEditPropertyRecordModal={
+                                    setShowEditPropertyRecordModal
+                                }
+                                jwt={jwt}
+                                dispatch={dispatch}
+                                propertyRecord={
+                                    propertyRecords[
+                                        currentEditPropertyRecordIndex
+                                    ]
+                                }
+                            />
+                        ) : null}
                         <Button
                             className="float-end bg-success border border-0"
                             title="Add a new Property Record"
@@ -104,7 +123,19 @@ const PropertyRecordsManagement = () => {
                                         return (
                                             <tr key={propertyRecord.id}>
                                                 <td>
-                                                    <button className="iconButton">
+                                                    <button
+                                                        className="iconButton"
+                                                        onClick={(e) => {
+                                                            e.preventDefault();
+
+                                                            setCurrentEditPropertyRecordIndex(
+                                                                index
+                                                            );
+                                                            setShowEditPropertyRecordModal(
+                                                                true
+                                                            );
+                                                        }}
+                                                    >
                                                         <FontAwesomeIcon
                                                             icon={faPen}
                                                             color="#32A6E9"

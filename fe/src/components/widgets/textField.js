@@ -13,7 +13,7 @@ function TextField(props) {
     } = props;
     return (
         <div>
-            <label htmlFor={label}>{label}</label>
+            {label !== "false" ? <label htmlFor={label}>{label}</label> : null}
             <Input
                 type={type}
                 name={label}

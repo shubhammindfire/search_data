@@ -26,10 +26,10 @@ export const addPropertyRecord = (propertyRecord = {}) => {
     };
 };
 
-export const editPropertyRecordByIndex = (newPropertyRecord = {}) => {
+export const editPropertyRecordByIndex = (newPropertyRecord = {}, id) => {
     return {
         type: EDIT_PROPERTY_RECORD_BY_INDEX,
-        payload: newPropertyRecord,
+        payload: { newPropertyRecord: newPropertyRecord, id: id },
     };
 };
 

@@ -1,19 +1,30 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { Button, Modal, ModalBody, ModalHeader } from "reactstrap";
-import { ADD_PROPERTY_RECORD_URL } from "../../constants";
-import { addPropertyRecord } from "../../redux/property_record/propertyRecordActions";
-import { validateEmptyField } from "../utils/validate";
+import {
+    EDIT_ADMIN_BY_ID_URL,
+    EDIT_PROPERTY_RECORD_BY_ID_URL,
+} from "../../constants";
+import { editAdminByIndex } from "../../redux/admin/adminActions";
+import { editPropertyRecordByIndex } from "../../redux/property_record/propertyRecordActions";
+import {
+    validateEmail,
+    validateEmptyField,
+    validatePassword,
+} from "../utils/validate";
 import LoadingModal from "./loadingModel";
 import TextField from "./textField";
 
-function AddPropertyRecordModal(props) {
-    const { setShowAddPropertyRecordModal, jwt, dispatch } = props;
-    const [section, setSection] = useState(null);
-    const [town, setTown] = useState(null);
-    const [range, setRange] = useState(null);
-    const [subdivision, setSubdivision] = useState("");
-    const [description, setDescription] = useState("");
+function EditPropertyRecordModal(props) {
+    const { setShowEditPropertyRecordModal, jwt, dispatch, propertyRecord } =
+        props;
+    console.log(`current record = ${JSON.stringify(propertyRecord)}`);
+
+    const [section, setSection] = useState(propertyRecord.section);
+    const [town, setTown] = useState(propertyRecord.town);
+    const [range, setRange] = useState(propertyRecord.rng); // range is named rng in the backend
+    const [subdivision, setSubdivision] = useState(propertyRecord.subdivision);
+    const [description, setDescription] = useState(propertyRecord.description);
     const [showLoading, setShowLoading] = useState(false);
 
     const [sectionError, setSectionError] = useState(null);
@@ -21,6 +32,7 @@ function AddPropertyRecordModal(props) {
     const [rangeError, setRangeError] = useState(null);
     const [subdivisionError, setSubdivisionError] = useState(null);
     const [descriptionError, setDescriptionError] = useState(null);
+
     const [successMessage, setSuccessMessage] = useState(null);
 
     const LOCAL_SECTION = "Section";
@@ -70,7 +82,7 @@ function AddPropertyRecordModal(props) {
         return true;
     }
 
-    function handleAddPropertyRecord(e) {
+    function handleEditPropertyRecord(e) {
         e.preventDefault();
         const propertyRecordObject = {
             section: parseInt(section),
@@ -83,15 +95,26 @@ function AddPropertyRecordModal(props) {
         if (validateAll()) {
             setShowLoading(true);
             axios
-                .post(ADD_PROPERTY_RECORD_URL, propertyRecordObject, {
-                    headers: { Authorization: `Bearer ${jwt}` },
-                })
+                .patch(
+                    EDIT_PROPERTY_RECORD_BY_ID_URL + `/${propertyRecord.id}`,
+                    propertyRecordObject,
+                    {
+                        headers: { Authorization: `Bearer ${jwt}` },
+                    }
+                )
                 .then((response) => {
                     setShowLoading(false);
-                    if (response.status === 201) {
-                        setSuccessMessage("Property Record added successfully");
-                        setShowAddPropertyRecordModal(false);
-                        dispatch(addPropertyRecord(propertyRecordObject));
+                    if (response.status === 200) {
+                        setSuccessMessage(
+                            "Property Record edited successfully"
+                        );
+                        setShowEditPropertyRecordModal(false);
+                        dispatch(
+                            editPropertyRecordByIndex(
+                                propertyRecordObject,
+                                propertyRecord.id
+                            )
+                        );
                     } else {
                     }
                 })
@@ -106,14 +129,15 @@ function AddPropertyRecordModal(props) {
 
     return (
         <Modal isOpen={true} autoFocus={false}>
-            <ModalHeader>Add Property Record</ModalHeader>
+            <ModalHeader>Edit Admin</ModalHeader>
             <ModalBody>
-                <form onSubmit={handleAddPropertyRecord}>
+                <form onSubmit={handleEditPropertyRecord}>
                     <TextField
                         label={LOCAL_SECTION}
                         placeholder={`Enter ${LOCAL_SECTION}`}
                         type="number"
                         autofocus={true}
+                        defaultValue={section}
                         onChange={(e) => handleFieldChange(e, LOCAL_SECTION)}
                     />
                     {sectionError !== null ? (
@@ -123,6 +147,7 @@ function AddPropertyRecordModal(props) {
                         label={LOCAL_TOWN}
                         placeholder={`Enter ${LOCAL_TOWN}`}
                         type="number"
+                        defaultValue={town}
                         onChange={(e) => handleFieldChange(e, LOCAL_TOWN)}
                     />
                     {townError !== null ? (
@@ -132,6 +157,7 @@ function AddPropertyRecordModal(props) {
                         label={LOCAL_RANGE}
                         placeholder={`Enter ${LOCAL_RANGE}`}
                         type="number"
+                        defaultValue={range}
                         onChange={(e) => handleFieldChange(e, LOCAL_RANGE)}
                     />
                     {rangeError !== null ? (
@@ -141,6 +167,7 @@ function AddPropertyRecordModal(props) {
                         label={LOCAL_SUBDIVISION}
                         placeholder={`Enter ${LOCAL_SUBDIVISION}`}
                         type="text"
+                        defaultValue={subdivision}
                         onChange={(e) =>
                             handleFieldChange(e, LOCAL_SUBDIVISION)
                         }
@@ -152,6 +179,7 @@ function AddPropertyRecordModal(props) {
                         label={LOCAL_DESCRIPTION}
                         placeholder={`Enter ${LOCAL_DESCRIPTION}`}
                         type="text"
+                        defaultValue={description}
                         onChange={(e) =>
                             handleFieldChange(e, LOCAL_DESCRIPTION)
                         }
@@ -170,13 +198,13 @@ function AddPropertyRecordModal(props) {
                         color="primary"
                         className="mt-2 float-end"
                     >
-                        Add
+                        Save
                     </Button>
                     <Button
                         color="danger"
                         onClick={(e) => {
                             e.preventDefault();
-                            setShowAddPropertyRecordModal(false);
+                            setShowEditPropertyRecordModal(false);
                         }}
                     >
                         Close
@@ -187,4 +215,4 @@ function AddPropertyRecordModal(props) {
     );
 }
 
-export default AddPropertyRecordModal;
+export default EditPropertyRecordModal;

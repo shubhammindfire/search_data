@@ -28,8 +28,6 @@ function EditAdminModal(props) {
     const LOCAL_FIRST_NAME = "First Name";
     const LOCAL_LAST_NAME = "Last Name";
 
-    console.log(`current admin edit = ${JSON.stringify(admin)}`);
-
     function handleFirstnameLastnameChange(e, type) {
         if (type === LOCAL_FIRST_NAME) setFirstname(e.target.value);
         else if (type === LOCAL_LAST_NAME) setLastname(e.target.value);

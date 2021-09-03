@@ -1,6 +1,7 @@
 import {
     ADD_ALL_PROPERTY_RECORDS,
     ADD_PROPERTY_RECORD,
+    EDIT_PROPERTY_RECORD_BY_INDEX,
     REMOVE_ALL_PROPERTY_RECORDS,
     REMOVE_PROPERTY_RECORD_BY_INDEX,
 } from "./propertyRecordTypes";
@@ -25,6 +26,19 @@ const propertyRecordReducer = (state = initialState, action) => {
             return {
                 ...state,
                 propertyRecords: [...state.propertyRecords, action.payload],
+            };
+        case EDIT_PROPERTY_RECORD_BY_INDEX:
+            return {
+                ...state,
+                propertyRecords: state.propertyRecords.map((propertyRecord) => {
+                    if (propertyRecord.id === action.payload.id) {
+                        const image = propertyRecord.image;
+                        propertyRecord = action.payload.newPropertyRecord;
+                        propertyRecord.id = action.payload.id;
+                        propertyRecord.image = image;
+                    }
+                    return propertyRecord;
+                }),
             };
         case REMOVE_PROPERTY_RECORD_BY_INDEX:
             return {
