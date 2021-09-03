@@ -11,8 +11,9 @@ import "./../../styles/adminManagement.css";
 import { Button } from "reactstrap";
 import handleDeleteAdmin from "./../utils/deleteAdmin";
 import LoadingModal from "../widgets/loadingModel";
-import handleAddAdmin from "../utils/addAdmin";
 import AddAdminModal from "../widgets/addAdminModal";
+import EditAdminModal from "../widgets/editAdminModal";
+import ErrorModal from "../widgets/ErrorModal";
 
 const AdminManagement = () => {
     const dispatch = useDispatch();
@@ -23,6 +24,8 @@ const AdminManagement = () => {
 
     const [showLoadingModal, setShowLoadingModal] = useState(false);
     const [showAddAdminModal, setShowAddAdminModal] = useState(false);
+    const [showEditAdminModal, setShowEditAdminModal] = useState(false);
+    const [currentEditAdminIndex, setCurrentEditAdminIndex] = useState(null);
 
     useEffect(() => {
         axios
@@ -31,11 +34,11 @@ const AdminManagement = () => {
             })
             .then((response) => {
                 dispatch(addAllAdmins(response.data["hydra:member"]));
-                console.log(
-                    `all admins = ${JSON.stringify(
-                        response.data["hydra:member"]
-                    )}`
-                );
+                // console.log(
+                //     `all admins = ${JSON.stringify(
+                //         response.data["hydra:member"]
+                //     )}`
+                // );
             })
             .catch((error) => {
                 if (error.response.data.code === 401) {
@@ -53,19 +56,37 @@ const AdminManagement = () => {
             {jwt === null ? (
                 // if the user is not logged in then redirect to login
                 <Redirect to={LOGIN_ROUTE} />
+            ) : isSessionExpired ? (
+                <ErrorModal />
             ) : (
                 <div>
                     <ProjectNavbar />
                     <div className="m-4">
                         <h2>Admins</h2>
                         {showLoadingModal ? <LoadingModal /> : null}
+                        {showAddAdminModal ? (
+                            <AddAdminModal
+                                setShowAddAdminModal={setShowAddAdminModal}
+                                jwt={jwt}
+                                dispatch={dispatch}
+                                admins={admins}
+                            />
+                        ) : null}
+                        {showEditAdminModal ? (
+                            <EditAdminModal
+                                setShowEditAdminModal={setShowEditAdminModal}
+                                jwt={jwt}
+                                dispatch={dispatch}
+                                admin={admins[currentEditAdminIndex]}
+                            />
+                        ) : null}
                         <Button
                             className="float-end bg-success border border-0"
                             title="Add a new Admin"
-                            // onClick={(e) => {
-                            //     e.preventDefault();
-                            //     setShowAddAdminModal(true);
-                            // }}
+                            onClick={(e) => {
+                                e.preventDefault();
+                                setShowAddAdminModal(true);
+                            }}
                         >
                             New
                         </Button>
@@ -83,13 +104,39 @@ const AdminManagement = () => {
                                 {admins.map((admin, index) => {
                                     return (
                                         <tr key={admin.email}>
+                                            {/* current admin can't edit oneself therefore edit icon is not shown */}
                                             <td>
-                                                <button className="iconButton">
-                                                    <FontAwesomeIcon
-                                                        icon={faPen}
-                                                        color="#32A6E9"
-                                                    />
-                                                </button>
+                                                {currentAdmin.email !==
+                                                admin.email ? (
+                                                    <button
+                                                        className="iconButton"
+                                                        onClick={(e) => {
+                                                            e.preventDefault();
+
+                                                            setCurrentEditAdminIndex(
+                                                                index
+                                                            );
+                                                            setShowEditAdminModal(
+                                                                true
+                                                            );
+                                                        }}
+                                                    >
+                                                        <FontAwesomeIcon
+                                                            icon={faPen}
+                                                            color="#32A6E9"
+                                                        />
+                                                    </button>
+                                                ) : (
+                                                    <button
+                                                        className="iconButton"
+                                                        title="An admin cannot edit oneself"
+                                                    >
+                                                        <FontAwesomeIcon
+                                                            icon={faPen}
+                                                            color="#AEAEAE"
+                                                        />
+                                                    </button>
+                                                )}
                                             </td>
                                             <td>{admin.firstname}</td>
                                             <td>{admin.lastname}</td>
@@ -115,7 +162,17 @@ const AdminManagement = () => {
                                                             color="#FF0000"
                                                         />
                                                     </button>
-                                                ) : null}
+                                                ) : (
+                                                    <button
+                                                        className="iconButton"
+                                                        title="An admin cannot delete oneself"
+                                                    >
+                                                        <FontAwesomeIcon
+                                                            icon={faTrashAlt}
+                                                            color="#AEAEAE"
+                                                        />
+                                                    </button>
+                                                )}
                                             </td>
                                         </tr>
                                     );

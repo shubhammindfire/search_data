@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
     Collapse,
     Navbar,
@@ -8,6 +8,7 @@ import {
     Nav,
     NavItem,
     NavLink,
+    NavbarText,
 } from "reactstrap";
 import {
     ADMIN_MANAGEMENT_ROUTE,
@@ -21,6 +22,7 @@ import {
 
 const ProjectNavbar = () => {
     const dispatch = useDispatch();
+    const currentAdmin = useSelector((state) => state.authReducer.currentAdmin);
     const [collapsed, setCollapsed] = useState(true);
 
     const toggleNavbar = () => setCollapsed(!collapsed);
@@ -39,7 +41,8 @@ const ProjectNavbar = () => {
                 <NavbarBrand href="/" className="mr-auto">
                     Admin Dashboard
                 </NavbarBrand>
-                <NavbarToggler onClick={toggleNavbar} className="mr-2" />
+                <NavbarText className="ms-auto">Hi, {currentAdmin.email}</NavbarText>
+                <NavbarToggler onClick={toggleNavbar} className="me-2 ms-2" />
                 <Collapse isOpen={!collapsed} navbar>
                     <Nav navbar>
                         <NavItem>

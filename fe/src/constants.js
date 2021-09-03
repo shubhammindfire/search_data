@@ -3,7 +3,7 @@ export const BASE_SERVER_URL = "http://localhost:8000";
 export const REGISTER_URL = BASE_SERVER_URL + "/api/admins";
 export const LOGIN_URL = BASE_SERVER_URL + "/api/login";
 export const GET_ALL_ADMINS_URL = BASE_SERVER_URL + "/api/admins";
-export const ADD_ADMIN_BY_ID_URL = BASE_SERVER_URL + "/api/admins";
+export const EDIT_ADMIN_BY_ID_URL = BASE_SERVER_URL + "/api/admins"; // actual endpoint - /api/admins/{id}
 export const DELETE_ADMIN_BY_ID_URL = BASE_SERVER_URL + "/api/admins"; // actual endpoint - /api/admins/{id}
 export const GET_ALL_PROPERTY_RECORDS_URL =
     BASE_SERVER_URL + "/api/property_records";

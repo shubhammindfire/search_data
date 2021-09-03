@@ -27,6 +27,7 @@ function Login(props) {
     const [successMessage, setSuccessMessage] = useState(null);
 
     function handleEmailChange(e) {
+        console.log(`email = ${e.target.value}`);
         setLoginError(null);
         setEmail(e.target.value);
     }
@@ -66,7 +67,7 @@ function Login(props) {
                     password: password,
                 })
                 .then((response) => {
-                    console.log(`Response: ${JSON.stringify(response)}`);
+                    // console.log(`Response: ${JSON.stringify(response)}`);
                     if (response.status === 200) {
                         dispatch(setAuthJwt(response.data));
                         dispatch(addCurrentAdmin({ email: email }));
@@ -91,7 +92,7 @@ function Login(props) {
                             history.push({ ADMIN_MANAGEMENT_ROUTE });
                         }, 1500);
                     } else {
-                        setLoginError(response.message);
+                        setLoginError(response.data.message);
                     }
                 })
                 .catch((error) => {
@@ -125,6 +126,7 @@ function Login(props) {
                                 label="Email"
                                 placeholder="Enter email"
                                 type="text"
+                                autofocus={true}
                                 onChange={handleEmailChange}
                             />
                             {emailError !== null ? (

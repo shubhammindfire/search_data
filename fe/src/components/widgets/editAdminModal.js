@@ -1,8 +1,8 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { Button, Modal, ModalBody, ModalHeader } from "reactstrap";
-import {  REGISTER_URL } from "../../constants";
-import { addAdmin } from "../../redux/admin/adminActions";
+import { EDIT_ADMIN_BY_ID_URL } from "../../constants";
+import { editAdminByIndex } from "../../redux/admin/adminActions";
 import {
     validateEmail,
     validateEmptyField,
@@ -11,11 +11,11 @@ import {
 import LoadingModal from "./loadingModel";
 import TextField from "./textField";
 
-function AddAdminModal(props) {
-    const { setShowAddAdminModal, jwt, dispatch } = props;
-    const [firstname, setFirstname] = useState("");
-    const [lastname, setLastname] = useState("");
-    const [email, setEmail] = useState("");
+function EditAdminModal(props) {
+    const { setShowEditAdminModal, jwt, dispatch, admin } = props;
+    const [firstname, setFirstname] = useState(admin.firstname);
+    const [lastname, setLastname] = useState(admin.lastname);
+    const [email, setEmail] = useState(admin.email);
     const [password, setPassword] = useState("");
     const [showLoading, setShowLoading] = useState(false);
 
@@ -27,6 +27,8 @@ function AddAdminModal(props) {
 
     const LOCAL_FIRST_NAME = "First Name";
     const LOCAL_LAST_NAME = "Last Name";
+
+    console.log(`current admin edit = ${JSON.stringify(admin)}`);
 
     function handleFirstnameLastnameChange(e, type) {
         if (type === LOCAL_FIRST_NAME) setFirstname(e.target.value);
@@ -64,7 +66,7 @@ function AddAdminModal(props) {
             setEmailError("Please provide a valid email");
             return false;
         }
-        if (!validatePassword(password)) {
+        if (password !== "" && !validatePassword(password)) {
             setPasswordError(
                 "Passwords must be at least 7 characters long and contain at least one digit , one uppercaseletter, and one lowercase letter"
             );
@@ -73,27 +75,34 @@ function AddAdminModal(props) {
         return true;
     }
 
-    function handleRegister(e) {
+    function handleEdit(e) {
         e.preventDefault();
-        const adminObject = {
-            firstname: firstname,
-            lastname: lastname,
-            email: email,
-            password: password,
-        };
+        const adminObject =
+            password === ""
+                ? {
+                      firstname: firstname,
+                      lastname: lastname,
+                      email: email,
+                  }
+                : {
+                      firstname: firstname,
+                      lastname: lastname,
+                      email: email,
+                      password: password,
+                  };
         clearSuccessAndErrorMessages();
         if (validateAll()) {
             setShowLoading(true);
             axios
-                .post(REGISTER_URL, adminObject, {
+                .patch(EDIT_ADMIN_BY_ID_URL + `/${admin.id}`, adminObject, {
                     headers: { Authorization: `Bearer ${jwt}` },
                 })
                 .then((response) => {
                     setShowLoading(false);
-                    if (response.status === 201) {
-                        setSuccessMessage("Admin registered successfully");
-                        setShowAddAdminModal(false);
-                        dispatch(addAdmin(adminObject));
+                    if (response.status === 200) {
+                        setSuccessMessage("Admin edited successfully");
+                        setShowEditAdminModal(false);
+                        dispatch(editAdminByIndex(adminObject, admin.id));
                     } else {
                     }
                 })
@@ -114,14 +123,15 @@ function AddAdminModal(props) {
 
     return (
         <Modal isOpen={true} autoFocus={false}>
-            <ModalHeader>Add Admin</ModalHeader>
+            <ModalHeader>Edit Admin</ModalHeader>
             <ModalBody>
-                <form onSubmit={handleRegister}>
+                <form onSubmit={handleEdit}>
                     <TextField
                         label="First Name"
                         placeholder="Enter First Name"
                         type="text"
                         autofocus={true}
+                        defaultValue={firstname}
                         onChange={(e) =>
                             handleFirstnameLastnameChange(e, LOCAL_FIRST_NAME)
                         }
@@ -133,6 +143,7 @@ function AddAdminModal(props) {
                         label="Last Name"
                         placeholder="Enter Last Name"
                         type="text"
+                        defaultValue={lastname}
                         onChange={(e) =>
                             handleFirstnameLastnameChange(e, LOCAL_LAST_NAME)
                         }
@@ -144,14 +155,15 @@ function AddAdminModal(props) {
                         label="Email"
                         placeholder="Enter Email"
                         type="text"
+                        defaultValue={email}
                         onChange={(e) => handleEmailChange(e)}
                     />
                     {emailError !== null ? (
                         <p className="text-danger">{emailError}</p>
                     ) : null}
                     <TextField
-                        label="Password"
-                        placeholder="Enter Password"
+                        label="New Password *(If left empty then old password will be used)"
+                        placeholder="Enter New Password"
                         type="text"
                         onChange={(e) => handlePasswordChange(e)}
                     />
@@ -171,13 +183,13 @@ function AddAdminModal(props) {
                         color="primary"
                         className="mt-2 float-end"
                     >
-                        Register
+                        Save
                     </Button>
                     <Button
                         color="danger"
                         onClick={(e) => {
                             e.preventDefault();
-                            setShowAddAdminModal(false);
+                            setShowEditAdminModal(false);
                         }}
                     >
                         Close
@@ -188,4 +200,4 @@ function AddAdminModal(props) {
     );
 }
 
-export default AddAdminModal;
+export default EditAdminModal;

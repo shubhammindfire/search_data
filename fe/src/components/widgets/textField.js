@@ -3,7 +3,14 @@ import PropTypes from "prop-types";
 import { Input } from "reactstrap";
 
 function TextField(props) {
-    const { label, placeholder, type, onChange } = props;
+    const {
+        label,
+        placeholder,
+        type,
+        autofocus = false,
+        defaultValue = "",
+        onChange,
+    } = props;
     return (
         <div>
             <label htmlFor={label}>{label}</label>
@@ -13,7 +20,9 @@ function TextField(props) {
                 id={label}
                 placeholder={placeholder}
                 onChange={onChange}
+                autoFocus={autofocus}
                 className="mt-2 mb-2"
+                defaultValue={defaultValue}
             />
         </div>
     );

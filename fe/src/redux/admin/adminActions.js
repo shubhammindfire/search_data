@@ -1,6 +1,6 @@
 import {
     ADD_ADMIN,
-    EDIT_ADMIN,
+    EDIT_ADMIN_BY_INDEX,
     ADD_ALL_ADMINS,
     REMOVE_ALL_ADMINS,
     REMOVE_ADMIN_BY_INDEX,
@@ -26,10 +26,10 @@ export const addAdmin = (admin = {}) => {
     };
 };
 
-export const editAdmin = (newAdmin = {}) => {
+export const editAdminByIndex = (newAdmin = {}, id) => {
     return {
-        type: EDIT_ADMIN,
-        payload: newAdmin,
+        type: EDIT_ADMIN_BY_INDEX,
+        payload: { newAdmin: newAdmin, id: id },
     };
 };
 
