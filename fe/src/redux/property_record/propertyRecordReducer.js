@@ -2,7 +2,7 @@ import {
     ADD_ALL_PROPERTY_RECORDS,
     ADD_PROPERTY_RECORD,
     REMOVE_ALL_PROPERTY_RECORDS,
-    REMOVE_PROPERTY_RECORD,
+    REMOVE_PROPERTY_RECORD_BY_INDEX,
 } from "./propertyRecordTypes";
 
 export const initialState = {
@@ -24,9 +24,9 @@ const propertyRecordReducer = (state = initialState, action) => {
         case ADD_PROPERTY_RECORD:
             return {
                 ...state,
-                propertyRecords: [...state.propertyRecords, ...action.payload],
+                propertyRecords: [...state.propertyRecords, action.payload],
             };
-        case REMOVE_PROPERTY_RECORD:
+        case REMOVE_PROPERTY_RECORD_BY_INDEX:
             return {
                 ...state,
                 propertyRecords: [

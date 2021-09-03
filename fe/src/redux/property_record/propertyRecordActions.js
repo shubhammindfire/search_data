@@ -1,9 +1,9 @@
 import {
     ADD_ALL_PROPERTY_RECORDS,
     ADD_PROPERTY_RECORD,
-    EDIT_PROPERTY_RECORD,
+    EDIT_PROPERTY_RECORD_BY_INDEX,
     REMOVE_ALL_PROPERTY_RECORDS,
-    REMOVE_PROPERTY_RECORD,
+    REMOVE_PROPERTY_RECORD_BY_INDEX,
 } from "./propertyRecordTypes";
 
 export const addAllPropertyRecords = (propertyRecords = []) => {
@@ -26,16 +26,16 @@ export const addPropertyRecord = (propertyRecord = {}) => {
     };
 };
 
-export const editPropertyRecord = (newPropertyRecord = {}) => {
+export const editPropertyRecordByIndex = (newPropertyRecord = {}) => {
     return {
-        type: EDIT_PROPERTY_RECORD,
+        type: EDIT_PROPERTY_RECORD_BY_INDEX,
         payload: newPropertyRecord,
     };
 };
 
-export const removePropertyRecord = (index) => {
+export const removePropertyRecordByIndex = (index) => {
     return {
-        type: REMOVE_PROPERTY_RECORD,
+        type: REMOVE_PROPERTY_RECORD_BY_INDEX,
         payload: index, // here payload is the index of the propertyRecord to be deleted
     };
 };

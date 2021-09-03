@@ -13,7 +13,7 @@ import handleDeleteAdmin from "./../utils/deleteAdmin";
 import LoadingModal from "../widgets/loadingModel";
 import AddAdminModal from "../widgets/addAdminModal";
 import EditAdminModal from "../widgets/editAdminModal";
-import ErrorModal from "../widgets/ErrorModal";
+import ErrorModal from "../widgets/errorModal";
 
 const AdminManagement = () => {
     const dispatch = useDispatch();

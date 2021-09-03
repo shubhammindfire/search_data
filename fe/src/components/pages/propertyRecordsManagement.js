@@ -5,12 +5,16 @@ import { Redirect } from "react-router-dom";
 import { GET_ALL_PROPERTY_RECORDS_URL, LOGIN_ROUTE } from "../../constants";
 import ProjectNavbar from "../widgets/projectNavbar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPen, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import { faImage, faPen, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import {
     addAllPropertyRecords,
     removeAllPropertyRecords,
 } from "./../../redux/property_record/propertyRecordActions";
 import { Button } from "reactstrap";
+import handleDeletePropertyRecord from "../utils/deletePropertyRecord";
+import LoadingModal from "../widgets/loadingModel";
+import AddPropertyRecordModal from "../widgets/addPropertyRecordModal";
+import ImageModal from "../widgets/imageModel";
 
 const PropertyRecordsManagement = () => {
     const dispatch = useDispatch();
@@ -18,7 +22,12 @@ const PropertyRecordsManagement = () => {
         (state) => state.propertyRecordReducer.propertyRecords
     );
     const jwt = useSelector((state) => state.authReducer.jwt);
+    const [showImageModal, setShowImageModal] = useState(false);
+    const [currentImage, setCurrentImage] = useState(null);
     const [isSessionExpired, setIsSessionExpired] = useState(false);
+    const [showLoadingModal, setShowLoadingModal] = useState(false);
+    const [showAddPropertyRecordModal, setShowAddPropertyRecordModal] =
+        useState(false);
 
     useEffect(() => {
         axios
@@ -27,11 +36,6 @@ const PropertyRecordsManagement = () => {
             })
             .then((response) => {
                 dispatch(addAllPropertyRecords(response.data["hydra:member"]));
-                console.log(
-                    `all admins = ${JSON.stringify(
-                        response.data["hydra:member"]
-                    )}`
-                );
             })
             .catch((error) => {
                 if (error.response.data.code === 401) {
@@ -54,9 +58,30 @@ const PropertyRecordsManagement = () => {
                     <ProjectNavbar />
                     <div className="m-4">
                         <h2>Property Records</h2>
+                        {showLoadingModal ? <LoadingModal /> : null}
+                        {showImageModal ? (
+                            <ImageModal
+                                currentImage={currentImage}
+                                setShowImageModal={setShowImageModal}
+                            />
+                        ) : null}
+                        {showAddPropertyRecordModal ? (
+                            <AddPropertyRecordModal
+                                setShowAddPropertyRecordModal={
+                                    setShowAddPropertyRecordModal
+                                }
+                                jwt={jwt}
+                                dispatch={dispatch}
+                                propertyRecords={propertyRecords}
+                            />
+                        ) : null}
                         <Button
                             className="float-end bg-success border border-0"
                             title="Add a new Property Record"
+                            onClick={(e) => {
+                                e.preventDefault();
+                                setShowAddPropertyRecordModal(true);
+                            }}
                         >
                             New
                         </Button>
@@ -86,7 +111,37 @@ const PropertyRecordsManagement = () => {
                                                         />
                                                     </button>
                                                 </td>
-                                                <td>{propertyRecord.image}</td>
+                                                <td>
+                                                    {propertyRecord.image ? (
+                                                        <button
+                                                            className="iconButton"
+                                                            onClick={(e) => {
+                                                                e.preventDefault();
+                                                                setCurrentImage(
+                                                                    propertyRecord.image
+                                                                );
+                                                                setShowImageModal(
+                                                                    true
+                                                                );
+                                                            }}
+                                                        >
+                                                            <FontAwesomeIcon
+                                                                icon={faImage}
+                                                                color="#32A6E9"
+                                                                size="2x"
+                                                            />
+                                                        </button>
+                                                    ) : (
+                                                        <button className="iconButton">
+                                                            <FontAwesomeIcon
+                                                                icon={faImage}
+                                                                color="#AEAEAE"
+                                                                size="2x"
+                                                                title="No image"
+                                                            />
+                                                        </button>
+                                                    )}
+                                                </td>
                                                 <td>
                                                     {propertyRecord.section}
                                                 </td>
@@ -99,7 +154,18 @@ const PropertyRecordsManagement = () => {
                                                     {propertyRecord.description}
                                                 </td>
                                                 <td>
-                                                    <button className="iconButton">
+                                                    <button
+                                                        className="iconButton"
+                                                        onClick={(e) =>
+                                                            handleDeletePropertyRecord(
+                                                                index,
+                                                                propertyRecord.id,
+                                                                jwt,
+                                                                setShowLoadingModal,
+                                                                dispatch
+                                                            )
+                                                        }
+                                                    >
                                                         <FontAwesomeIcon
                                                             icon={faTrashAlt}
                                                             color="#FF0000"
