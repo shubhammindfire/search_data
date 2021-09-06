@@ -19,6 +19,8 @@ import {
     PaginationLink,
 } from "reactstrap";
 import "./../../styles/search.css";
+import { faArrowDown, faArrowUp } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const Search = () => {
     const dispatch = useDispatch();
@@ -29,10 +31,18 @@ const Search = () => {
 
     const toggle = () => setDropdownOpen((prevState) => !prevState);
     const [itemsPerPage, setItemsPerPage] = useState(10);
-    const [section, setSection] = useState(null);
-    const [town, setTown] = useState(null);
-    const [range, setRange] = useState(null);
-    const [subdivision, setSubdivision] = useState(null);
+    const [pageNumber, setPageNumber] = useState(1);
+    const [totalItems, setTotalItems] = useState(0);
+    const [section, setSection] = useState(0);
+    const [town, setTown] = useState(0);
+    const [range, setRange] = useState(0);
+    const [subdivision, setSubdivision] = useState("");
+
+    const [sectionSort, setSectionSort] = useState("");
+    const [townSort, setTownSort] = useState("");
+    const [rangeSort, setRangeSort] = useState("");
+    const [subdivisionSort, setSubdivisionSort] = useState("");
+    const [descriptionSort, setDescriptionSort] = useState("");
 
     function handleItemsPerPageChange(e, newItemsPerPage) {
         e.preventDefault();
@@ -40,10 +50,33 @@ const Search = () => {
         setItemsPerPage(newItemsPerPage);
     }
 
+    function getSearchUrl() {
+        return `${GET_ALL_PROPERTY_RECORDS_URL}?itemsPerPage=${itemsPerPage}&page=${pageNumber}
+        ${sectionSort !== "" ? `&order[section]=${sectionSort}` : ""}
+        ${townSort !== "" ? `&order[town]=${townSort}` : ""}
+        ${rangeSort !== "" ? `&order[rng]=${rangeSort}` : ""}
+        ${
+            subdivisionSort !== ""
+                ? `&order[subdivision]=${subdivisionSort}`
+                : ""
+        }
+        ${
+            descriptionSort !== ""
+                ? `&order[description]=${descriptionSort}`
+                : ""
+        }
+        ${section > 0 ? `&section=${section}` : ""}
+        ${town > 0 ? `&town=${town}` : ""}
+        ${range > 0 ? `&rng=${range}` : ""}
+        ${subdivision !== "" ? `&subdivision=${subdivision}` : ""}
+        `;
+    }
+
     useEffect(() => {
         axios
-            .get(GET_ALL_PROPERTY_RECORDS_URL + `?itemsPerPage=${itemsPerPage}`)
+            .get(getSearchUrl())
             .then((response) => {
+                setTotalItems(response.data["hydra:totalItems"]);
                 dispatch(addAllPropertyRecords(response.data["hydra:member"]));
             })
             .catch((error) => {});
@@ -51,24 +84,96 @@ const Search = () => {
         return () => {
             dispatch(removeAllPropertyRecords());
         };
-    }, [dispatch, itemsPerPage]);
+    }, [
+        dispatch,
+        itemsPerPage,
+        pageNumber,
+        sectionSort,
+        townSort,
+        rangeSort,
+        subdivisionSort,
+        descriptionSort,
+    ]);
 
     const LOCAL_SECTION = "Section";
     const LOCAL_TOWN = "Town";
     const LOCAL_RANGE = "Range";
     const LOCAL_SUBDIVISION = "Subdivision";
+    const LOCAL_DESCRIPTION = "Description";
 
     const handleFieldChange = (e, type) => {
         e.preventDefault();
+        setPageNumber(1);
         if (type === LOCAL_SECTION) setSection(e.target.value);
         if (type === LOCAL_TOWN) setTown(e.target.value);
         if (type === LOCAL_RANGE) setRange(e.target.value);
         if (type === LOCAL_SUBDIVISION) setSubdivision(e.target.value);
     };
 
+    const handleSortChange = (e, type) => {
+        e.preventDefault();
+        setPageNumber(1);
+        if (type === LOCAL_SECTION) {
+            setSectionSort(
+                sectionSort === "" || sectionSort === "ASC" ? "DESC" : "ASC"
+            );
+            setTownSort("");
+            setRangeSort("");
+            setSubdivisionSort("");
+            setDescriptionSort("");
+        } else if (type === LOCAL_TOWN) {
+            setTownSort(townSort === "" || townSort === "ASC" ? "DESC" : "ASC");
+            setSectionSort("");
+            setRangeSort("");
+            setSubdivisionSort("");
+            setDescriptionSort("");
+        } else if (type === LOCAL_RANGE) {
+            setRangeSort(
+                rangeSort === "" || rangeSort === "ASC" ? "DESC" : "ASC"
+            );
+            setTownSort("");
+            setSectionSort("");
+            setSubdivisionSort("");
+            setDescriptionSort("");
+        } else if (type === LOCAL_SUBDIVISION) {
+            setSubdivisionSort(
+                subdivisionSort === "" || subdivisionSort === "ASC"
+                    ? "DESC"
+                    : "ASC"
+            );
+            setTownSort("");
+            setSectionSort("");
+            setRangeSort("");
+            setDescriptionSort("");
+        } else if (type === LOCAL_DESCRIPTION) {
+            setDescriptionSort(
+                descriptionSort === "" || descriptionSort === "ASC"
+                    ? "DESC"
+                    : "ASC"
+            );
+            setTownSort("");
+            setSectionSort("");
+            setRangeSort("");
+            setSubdivisionSort("");
+        }
+    };
+
     const handleSearch = (e) => {
         e.preventDefault();
+
+        axios
+            .get(getSearchUrl())
+            .then((response) => {
+                setTotalItems(response.data["hydra:totalItems"]);
+                dispatch(addAllPropertyRecords(response.data["hydra:member"]));
+            })
+            .catch((error) => {});
     };
+
+    var paginationLinks = [];
+    for (var i = 1; i <= Math.ceil(totalItems / itemsPerPage); i++) {
+        paginationLinks.push(i);
+    }
 
     return (
         <div>
@@ -81,7 +186,7 @@ const Search = () => {
                     </Link>
                 </div>
                 <div className="d-flex flex-column justify-content-center align-items-center">
-                    <div className="rounded-3 shadow p-4">
+                    <div className="rounded-3 shadow p-4 m-auto">
                         <p className="mb-4 fs-1">Search</p>
                         <form onSubmit={handleSearch}>
                             <Input
@@ -89,6 +194,7 @@ const Search = () => {
                                 label="false"
                                 placeholder={LOCAL_SECTION}
                                 type="number"
+                                min={1}
                                 onChange={(e) =>
                                     handleFieldChange(e, LOCAL_SECTION)
                                 }
@@ -98,6 +204,7 @@ const Search = () => {
                                 label="false"
                                 placeholder={LOCAL_TOWN}
                                 type="number"
+                                min={1}
                                 onChange={(e) =>
                                     handleFieldChange(e, LOCAL_TOWN)
                                 }
@@ -107,6 +214,7 @@ const Search = () => {
                                 label="false"
                                 placeholder={LOCAL_RANGE}
                                 type="number"
+                                min={1}
                                 onChange={(e) =>
                                     handleFieldChange(e, LOCAL_RANGE)
                                 }
@@ -169,11 +277,101 @@ const Search = () => {
                     <thead>
                         <tr>
                             <th scope="col">Image</th>
-                            <th scope="col">Section</th>
-                            <th scope="col">Town</th>
-                            <th scope="col">Range</th>
-                            <th scope="col">Subdivision</th>
-                            <th scope="col">Description</th>
+                            <th
+                                scope="col"
+                                onClick={(e) => {
+                                    handleSortChange(e, LOCAL_SECTION);
+                                }}
+                            >
+                                Section{" "}
+                                {sectionSort === "ASC" ? (
+                                    <FontAwesomeIcon
+                                        icon={faArrowUp}
+                                        title="Sort is ASC"
+                                    />
+                                ) : sectionSort === "DESC" ? (
+                                    <FontAwesomeIcon
+                                        icon={faArrowDown}
+                                        title="Sort is DESC"
+                                    />
+                                ) : null}
+                            </th>
+                            <th
+                                scope="col"
+                                onClick={(e) => {
+                                    handleSortChange(e, LOCAL_TOWN);
+                                }}
+                            >
+                                Town{" "}
+                                {townSort === "ASC" ? (
+                                    <FontAwesomeIcon
+                                        icon={faArrowUp}
+                                        title="Sort is ASC"
+                                    />
+                                ) : townSort === "DESC" ? (
+                                    <FontAwesomeIcon
+                                        icon={faArrowDown}
+                                        title={"Sort is DESC"}
+                                    />
+                                ) : null}
+                            </th>
+                            <th
+                                scope="col"
+                                onClick={(e) => {
+                                    handleSortChange(e, LOCAL_RANGE);
+                                }}
+                            >
+                                Range{" "}
+                                {rangeSort === "ASC" ? (
+                                    <FontAwesomeIcon
+                                        icon={faArrowUp}
+                                        title="Sort is ASC"
+                                    />
+                                ) : rangeSort === "DESC" ? (
+                                    <FontAwesomeIcon
+                                        icon={faArrowDown}
+                                        title="Sort is DESC"
+                                    />
+                                ) : null}
+                            </th>
+                            <th
+                                scope="col"
+                                onClick={(e) => {
+                                    handleSortChange(e, LOCAL_SUBDIVISION);
+                                }}
+                            >
+                                Subdivision{" "}
+                                {subdivisionSort === "ASC" ? (
+                                    <FontAwesomeIcon
+                                        icon={faArrowUp}
+                                        title="Sort is ASC"
+                                    />
+                                ) : subdivisionSort === "DESC" ? (
+                                    <FontAwesomeIcon
+                                        icon={faArrowDown}
+                                        title="Sort is DESC"
+                                    />
+                                ) : null}
+                            </th>
+                            <th
+                                scope="col"
+                                onClick={(e) => {
+                                    handleSortChange(e, LOCAL_DESCRIPTION);
+                                }}
+                            >
+                                Description{" "}
+                                {descriptionSort === "ASC" ? (
+                                    <FontAwesomeIcon
+                                        icon={faArrowUp}
+                                        title="Sort is ASC"
+                                    />
+                                ) : descriptionSort === "DESC" ? (
+                                    <FontAwesomeIcon
+                                        icon={faArrowDown}
+                                        title="Sort is DESC"
+                                    />
+                                ) : null}
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -196,27 +394,22 @@ const Search = () => {
                     aria-label="Page navigation example"
                     className="justify-content-center"
                 >
-                    <PaginationItem>
-                        <PaginationLink previous href="#" />
-                    </PaginationItem>
-                    <PaginationItem>
-                        <PaginationLink href="#">1</PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem>
-                        <PaginationLink href="#">2</PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem>
-                        <PaginationLink href="#">3</PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem>
-                        <PaginationLink href="#">4</PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem>
-                        <PaginationLink href="#">5</PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem>
-                        <PaginationLink next href="#" />
-                    </PaginationItem>
+                    {paginationLinks.map((_, index) => (
+                        <PaginationItem
+                            key={index + 1}
+                            active={pageNumber === index + 1}
+                        >
+                            <PaginationLink
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    if (pageNumber !== index + 1)
+                                        setPageNumber(index + 1);
+                                }}
+                            >
+                                {index + 1}
+                            </PaginationLink>
+                        </PaginationItem>
+                    ))}
                 </Pagination>
             </div>
         </div>
