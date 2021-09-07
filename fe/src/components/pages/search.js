@@ -19,8 +19,13 @@ import {
     PaginationLink,
 } from "reactstrap";
 import "./../../styles/search.css";
-import { faArrowDown, faArrowUp } from "@fortawesome/free-solid-svg-icons";
+import {
+    faArrowDown,
+    faArrowUp,
+    faImage,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import ImageModal from "../widgets/imageModal";
 
 const Search = () => {
     const dispatch = useDispatch();
@@ -29,6 +34,8 @@ const Search = () => {
     );
     const [dropdownOpen, setDropdownOpen] = useState(false);
 
+    const [showImageModal, setShowImageModal] = useState(false);
+    const [currentImageRecordId, setCurrentImageRecordId] = useState(null);
     const toggle = () => setDropdownOpen((prevState) => !prevState);
     const [itemsPerPage, setItemsPerPage] = useState(10);
     const [pageNumber, setPageNumber] = useState(1);
@@ -188,6 +195,12 @@ const Search = () => {
                 <div className="d-flex flex-column justify-content-center align-items-center">
                     <div className="rounded-3 shadow p-4 m-auto">
                         <p className="mb-4 fs-1">Search</p>
+                        {showImageModal ? (
+                            <ImageModal
+                                currentImageRecordId={currentImageRecordId}
+                                setShowImageModal={setShowImageModal}
+                            />
+                        ) : null}
                         <form onSubmit={handleSearch}>
                             <Input
                                 className="search-input m-2"
@@ -378,7 +391,35 @@ const Search = () => {
                         {propertyRecords.map((propertyRecord, index) => {
                             return (
                                 <tr key={propertyRecord.id}>
-                                    <td>{propertyRecord.image}</td>
+                                    <td>
+                                        {propertyRecord.image ? (
+                                            <button
+                                                className="iconButton"
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    setCurrentImageRecordId(
+                                                        propertyRecord.id
+                                                    );
+                                                    setShowImageModal(true);
+                                                }}
+                                            >
+                                                <FontAwesomeIcon
+                                                    icon={faImage}
+                                                    color="#32A6E9"
+                                                    size="2x"
+                                                />
+                                            </button>
+                                        ) : (
+                                            <button className="iconButton">
+                                                <FontAwesomeIcon
+                                                    icon={faImage}
+                                                    color="#AEAEAE"
+                                                    size="2x"
+                                                    title="No image"
+                                                />
+                                            </button>
+                                        )}
+                                    </td>
                                     <td>{propertyRecord.section}</td>
                                     <td>{propertyRecord.town}</td>
                                     <td>{propertyRecord.rng}</td>

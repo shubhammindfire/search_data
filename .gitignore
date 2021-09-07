@@ -40,3 +40,5 @@ be/vendor/
 ###> lexik/jwt-authentication-bundle ###
 be/config/jwt/*.pem
 ###< lexik/jwt-authentication-bundle ###
+
+be/public/uploads/

@@ -190,4 +190,11 @@ class PropertyRecords
             $this->setCreatedAt($currentDateTime);
         }
     }
+
+    public function getImageUrl(): ?String
+    {
+        if ($this->image === null || $this->image === "")
+            return null;
+        return 'uploads/' . $this->id . '_' . $this->image;
+    }
 }

@@ -12,7 +12,7 @@ import {
     validateEmptyField,
     validatePassword,
 } from "../utils/validate";
-import LoadingModal from "./loadingModel";
+import LoadingModal from "./loadingModal";
 import TextField from "./textField";
 
 function EditPropertyRecordModal(props) {
@@ -20,6 +20,7 @@ function EditPropertyRecordModal(props) {
         props;
     console.log(`current record = ${JSON.stringify(propertyRecord)}`);
 
+    const [image, setImage] = useState(null);
     const [section, setSection] = useState(propertyRecord.section);
     const [town, setTown] = useState(propertyRecord.town);
     const [range, setRange] = useState(propertyRecord.rng); // range is named rng in the backend
@@ -82,6 +83,10 @@ function EditPropertyRecordModal(props) {
         return true;
     }
 
+    const handleImageChange = (e) => {
+        setImage(e.target.files[0]);
+    };
+
     function handleEditPropertyRecord(e) {
         e.preventDefault();
         const propertyRecordObject = {
@@ -91,15 +96,27 @@ function EditPropertyRecordModal(props) {
             subdivision: subdivision,
             description: description,
         };
+
+        let form_data = new FormData();
+        form_data.append("image", image);
+        form_data.append("section", section);
+        form_data.append("town", town);
+        form_data.append("rng", range); // range is named rng in the backend
+        form_data.append("subdivision", subdivision);
+        form_data.append("description", description);
+
         clearSuccessAndErrorMessages();
         if (validateAll()) {
             setShowLoading(true);
             axios
                 .patch(
                     EDIT_PROPERTY_RECORD_BY_ID_URL + `/${propertyRecord.id}`,
-                    propertyRecordObject,
+                    form_data,
                     {
-                        headers: { Authorization: `Bearer ${jwt}` },
+                        headers: {
+                            "Content-type": "multipart/form-data",
+                            Authorization: `Bearer ${jwt}`,
+                        },
                     }
                 )
                 .then((response) => {
@@ -132,6 +149,12 @@ function EditPropertyRecordModal(props) {
             <ModalHeader>Edit Admin</ModalHeader>
             <ModalBody>
                 <form onSubmit={handleEditPropertyRecord}>
+                    <input
+                        type="file"
+                        id="image"
+                        accept="image/png, image/jpeg"
+                        onChange={handleImageChange}
+                    />
                     <TextField
                         label={LOCAL_SECTION}
                         placeholder={`Enter ${LOCAL_SECTION}`}

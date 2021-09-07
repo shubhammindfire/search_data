@@ -7,6 +7,8 @@ export const EDIT_ADMIN_BY_ID_URL = BASE_SERVER_URL + "/api/admins"; // actual e
 export const DELETE_ADMIN_BY_ID_URL = BASE_SERVER_URL + "/api/admins"; // actual endpoint - /api/admins/{id}
 export const GET_ALL_PROPERTY_RECORDS_URL =
     BASE_SERVER_URL + "/api/property_records";
+export const GET_PROPERTY_RECORD_IMAGE_URL =
+    BASE_SERVER_URL + "/api/property_records"; // actual endpoint - /api/property_record/{id}/imageUrl
 export const ADD_PROPERTY_RECORD_URL =
     BASE_SERVER_URL + "/api/property_records";
 export const EDIT_PROPERTY_RECORD_BY_ID_URL =

@@ -10,7 +10,7 @@ import { faPen, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import "./../../styles/adminManagement.css";
 import { Button } from "reactstrap";
 import handleDeleteAdmin from "./../utils/deleteAdmin";
-import LoadingModal from "../widgets/loadingModel";
+import LoadingModal from "../widgets/loadingModal";
 import AddAdminModal from "../widgets/addAdminModal";
 import EditAdminModal from "../widgets/editAdminModal";
 import ErrorModal from "../widgets/errorModal";

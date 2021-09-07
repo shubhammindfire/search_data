@@ -12,9 +12,9 @@ import {
 } from "./../../redux/property_record/propertyRecordActions";
 import { Button } from "reactstrap";
 import handleDeletePropertyRecord from "../utils/deletePropertyRecord";
-import LoadingModal from "../widgets/loadingModel";
+import LoadingModal from "../widgets/loadingModal";
 import AddPropertyRecordModal from "../widgets/addPropertyRecordModal";
-import ImageModal from "../widgets/imageModel";
+import ImageModal from "../widgets/imageModal";
 import EditPropertyRecordModal from "../widgets/editPropertyRecordModal";
 
 const PropertyRecordsManagement = () => {
@@ -24,7 +24,7 @@ const PropertyRecordsManagement = () => {
     );
     const jwt = useSelector((state) => state.authReducer.jwt);
     const [showImageModal, setShowImageModal] = useState(false);
-    const [currentImage, setCurrentImage] = useState(null);
+    const [currentImageRecordId, setCurrentImageRecordId] = useState(null);
     const [isSessionExpired, setIsSessionExpired] = useState(false);
     const [showLoadingModal, setShowLoadingModal] = useState(false);
     const [showAddPropertyRecordModal, setShowAddPropertyRecordModal] =
@@ -66,7 +66,7 @@ const PropertyRecordsManagement = () => {
                         {showLoadingModal ? <LoadingModal /> : null}
                         {showImageModal ? (
                             <ImageModal
-                                currentImage={currentImage}
+                                currentImageRecordId={currentImageRecordId}
                                 setShowImageModal={setShowImageModal}
                             />
                         ) : null}
@@ -148,8 +148,8 @@ const PropertyRecordsManagement = () => {
                                                             className="iconButton"
                                                             onClick={(e) => {
                                                                 e.preventDefault();
-                                                                setCurrentImage(
-                                                                    propertyRecord.image
+                                                                setCurrentImageRecordId(
+                                                                    propertyRecord.id
                                                                 );
                                                                 setShowImageModal(
                                                                     true

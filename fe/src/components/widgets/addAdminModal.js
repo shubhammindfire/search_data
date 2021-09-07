@@ -8,7 +8,7 @@ import {
     validateEmptyField,
     validatePassword,
 } from "../utils/validate";
-import LoadingModal from "./loadingModel";
+import LoadingModal from "./loadingModal";
 import TextField from "./textField";
 
 function AddAdminModal(props) {

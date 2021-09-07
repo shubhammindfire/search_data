@@ -4,11 +4,14 @@ import { Button, Modal, ModalBody, ModalHeader } from "reactstrap";
 import { ADD_PROPERTY_RECORD_URL } from "../../constants";
 import { addPropertyRecord } from "../../redux/property_record/propertyRecordActions";
 import { validateEmptyField } from "../utils/validate";
-import LoadingModal from "./loadingModel";
+import LoadingModal from "./loadingModal";
 import TextField from "./textField";
 
 function AddPropertyRecordModal(props) {
     const { setShowAddPropertyRecordModal, jwt, dispatch } = props;
+
+    const [image, setImage] = useState(null);
+    const [imageName, setImageName] = useState(null);
     const [section, setSection] = useState(null);
     const [town, setTown] = useState(null);
     const [range, setRange] = useState(null);
@@ -70,27 +73,45 @@ function AddPropertyRecordModal(props) {
         return true;
     }
 
+    const handleImageChange = (e) => {
+        setImageName(e.target.files[0].name);
+        setImage(e.target.files[0]);
+    };
+
     function handleAddPropertyRecord(e) {
         e.preventDefault();
         const propertyRecordObject = {
+            image: imageName,
             section: parseInt(section),
             town: parseInt(town),
             rng: parseInt(range), // range is named rng in the backend
             subdivision: subdivision,
             description: description,
         };
+
+        let form_data = new FormData();
+        form_data.append("image", image);
+        form_data.append("section", section);
+        form_data.append("town", town);
+        form_data.append("rng", range); // range is named rng in the backend
+        form_data.append("subdivision", subdivision);
+        form_data.append("description", description);
         clearSuccessAndErrorMessages();
         if (validateAll()) {
             setShowLoading(true);
             axios
-                .post(ADD_PROPERTY_RECORD_URL, propertyRecordObject, {
-                    headers: { Authorization: `Bearer ${jwt}` },
+                .post(ADD_PROPERTY_RECORD_URL, form_data, {
+                    headers: {
+                        "Content-type": "multipart/form-data",
+                        Authorization: `Bearer ${jwt}`,
+                    },
                 })
                 .then((response) => {
                     setShowLoading(false);
                     if (response.status === 201) {
                         setSuccessMessage("Property Record added successfully");
                         setShowAddPropertyRecordModal(false);
+                        propertyRecordObject.id = response.data.id;
                         dispatch(addPropertyRecord(propertyRecordObject));
                     } else {
                     }
@@ -109,6 +130,12 @@ function AddPropertyRecordModal(props) {
             <ModalHeader>Add Property Record</ModalHeader>
             <ModalBody>
                 <form onSubmit={handleAddPropertyRecord}>
+                    <input
+                        type="file"
+                        id="image"
+                        accept="image/png, image/jpeg"
+                        onChange={handleImageChange}
+                    />
                     <TextField
                         label={LOCAL_SECTION}
                         placeholder={`Enter ${LOCAL_SECTION}`}
