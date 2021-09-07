@@ -69,7 +69,7 @@ function Login(props) {
                 .then((response) => {
                     // console.log(`Response: ${JSON.stringify(response)}`);
                     if (response.status === 200) {
-                        dispatch(setAuthJwt(response.data));
+                        dispatch(setAuthJwt(response.data.token));
                         dispatch(addCurrentAdmin({ email: email }));
                         const ttl = 3600000; // time for expiry in milliseconds
                         const jwtToLocalStorage = {
