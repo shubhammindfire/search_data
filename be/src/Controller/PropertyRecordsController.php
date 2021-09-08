@@ -41,6 +41,7 @@ class PropertyRecordsController extends AbstractController
 		$rng = $request->get('rng');
 		$subdivision = $request->get('subdivision');
 		$description = $request->get('description');
+
 		/** @var UploadedFile $image */
 		$image = $request->files->get('image');
 		$destination = $this->getParameter('kernel.project_dir') . '/public/uploads';
@@ -62,6 +63,7 @@ class PropertyRecordsController extends AbstractController
 		$rng = $request->get('rng');
 		$subdivision = $request->get('subdivision');
 		$description = $request->get('description');
+
 		/** @var UploadedFile $image */
 		$image = $request->files->get('image');
 		$destination = $this->getParameter('kernel.project_dir') . '/public/uploads';

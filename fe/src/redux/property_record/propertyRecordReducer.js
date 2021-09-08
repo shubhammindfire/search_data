@@ -32,10 +32,7 @@ const propertyRecordReducer = (state = initialState, action) => {
                 ...state,
                 propertyRecords: state.propertyRecords.map((propertyRecord) => {
                     if (propertyRecord.id === action.payload.id) {
-                        const image = propertyRecord.image;
                         propertyRecord = action.payload.newPropertyRecord;
-                        propertyRecord.id = action.payload.id;
-                        propertyRecord.image = image;
                     }
                     return propertyRecord;
                 }),

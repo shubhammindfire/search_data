@@ -96,8 +96,6 @@ class PropertyRecordsService extends BaseService
 			$em = $this->doctrine->getManager();
 
 			if ($image !== null) {
-				$propertyRecord->setImage($image->getClientOriginalName());
-
 				$filesystem = new Filesystem();
 				$filename = $destination . '/' . $propertyRecord->getId() . '_' . $propertyRecord->getImage();
 				if ($filesystem->exists($filename)) {
@@ -113,6 +111,7 @@ class PropertyRecordsService extends BaseService
 					$destination,
 					$newFilename
 				);
+				$propertyRecord->setImage($image->getClientOriginalName());
 			}
 			if ($section !== $propertyRecord->getSection())
 				$propertyRecord->setSection($section);
@@ -128,20 +127,11 @@ class PropertyRecordsService extends BaseService
 			$em->persist($propertyRecord);
 			$em->flush();
 
-			if ($image !== null) {
-				$originalFilename = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME);
-				$newFilename = $propertyRecord->getId() . '_' .  $originalFilename . '.' . $image->guessExtension();
-				$image->move(
-					$destination,
-					$newFilename
-				);
-			}
-
-			$this->logger->info("Successfully added PropertyRecord");
+			$this->logger->info("Successfully edited PropertyRecord with id=$id");
 			return ["status" => "Success"];
 		} catch (Exception $exception) {
-			$this->logger->error("Failed to successfully add PropertyRecord. Error: " . $exception->getMessage());
-			return ["status" => "Error", "message" => "Error: Failed to add PropertyRecord"];
+			$this->logger->error("Failed to successfully edit PropertyRecord with id=$id. Error: " . $exception->getMessage());
+			return ["status" => "Error", "message" => "Error: Failed to edit PropertyRecord with id=$id"];
 		}
 	}
 

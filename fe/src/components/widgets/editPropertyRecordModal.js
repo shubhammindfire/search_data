@@ -1,26 +1,18 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { Button, Modal, ModalBody, ModalHeader } from "reactstrap";
-import {
-    EDIT_ADMIN_BY_ID_URL,
-    EDIT_PROPERTY_RECORD_BY_ID_URL,
-} from "../../constants";
-import { editAdminByIndex } from "../../redux/admin/adminActions";
+import { EDIT_PROPERTY_RECORD_BY_ID_URL } from "../../constants";
 import { editPropertyRecordByIndex } from "../../redux/property_record/propertyRecordActions";
-import {
-    validateEmail,
-    validateEmptyField,
-    validatePassword,
-} from "../utils/validate";
+import { validateEmptyField } from "../utils/validate";
 import LoadingModal from "./loadingModal";
 import TextField from "./textField";
 
 function EditPropertyRecordModal(props) {
     const { setShowEditPropertyRecordModal, jwt, dispatch, propertyRecord } =
         props;
-    console.log(`current record = ${JSON.stringify(propertyRecord)}`);
 
     const [image, setImage] = useState(null);
+    const [imageName, setImageName] = useState(null);
     const [section, setSection] = useState(propertyRecord.section);
     const [town, setTown] = useState(propertyRecord.town);
     const [range, setRange] = useState(propertyRecord.rng); // range is named rng in the backend
@@ -84,12 +76,15 @@ function EditPropertyRecordModal(props) {
     }
 
     const handleImageChange = (e) => {
+        setImageName(e.target.files[0].name);
         setImage(e.target.files[0]);
     };
 
     function handleEditPropertyRecord(e) {
         e.preventDefault();
         const propertyRecordObject = {
+            id: propertyRecord.id,
+            image: imageName,
             section: parseInt(section),
             town: parseInt(town),
             rng: parseInt(range), // range is named rng in the backend
@@ -108,9 +103,12 @@ function EditPropertyRecordModal(props) {
         clearSuccessAndErrorMessages();
         if (validateAll()) {
             setShowLoading(true);
+            // actual method used is PATCH but I am using POST here with ?_method=PATCH attribute
+            // this is because form-data is not supported for PATCH method so this is a way to do this
             axios
-                .patch(
-                    EDIT_PROPERTY_RECORD_BY_ID_URL + `/${propertyRecord.id}`,
+                .post(
+                    EDIT_PROPERTY_RECORD_BY_ID_URL +
+                        `/${propertyRecord.id}?_method=PATCH`,
                     form_data,
                     {
                         headers: {
@@ -121,7 +119,7 @@ function EditPropertyRecordModal(props) {
                 )
                 .then((response) => {
                     setShowLoading(false);
-                    if (response.status === 200) {
+                    if (response.status === 201) {
                         setSuccessMessage(
                             "Property Record edited successfully"
                         );
