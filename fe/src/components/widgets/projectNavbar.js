@@ -39,7 +39,7 @@ const ProjectNavbar = () => {
     return (
         <div>
             <Navbar color="faded" className="mx-4" light>
-                <NavbarBrand href="/" className="mr-auto">
+                <NavbarBrand className="mr-auto">
                     Admin Dashboard
                 </NavbarBrand>
                 <NavbarText className="ms-auto">

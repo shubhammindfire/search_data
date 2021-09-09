@@ -103,7 +103,7 @@ const PropertyRecordsManagement = () => {
                                 }
                             />
                         ) : null}
-                        <div className="float-end">
+                        <div className="float-end mb-4">
                             <Button
                                 className="bg-primary border border-0 me-1"
                                 title="Import data to the database"
@@ -126,7 +126,7 @@ const PropertyRecordsManagement = () => {
                             </Button>
                         </div>
                         {propertyRecords.length !== 0 ? (
-                            <table className="table table-responsive">
+                            <table className="table table-responsive table-striped table-bordered mt-5">
                                 <thead>
                                     <tr>
                                         <th scope="col">Edit</th>

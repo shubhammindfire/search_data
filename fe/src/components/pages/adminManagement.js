@@ -81,7 +81,7 @@ const AdminManagement = () => {
                             />
                         ) : null}
                         <Button
-                            className="float-end bg-success border border-0"
+                            className="float-end bg-success border border-0 mb-4"
                             title="Add a new Admin"
                             onClick={(e) => {
                                 e.preventDefault();
@@ -91,7 +91,7 @@ const AdminManagement = () => {
                             New
                         </Button>
                         {admins.length !== 0 ? (
-                            <table className="table table-responsive">
+                            <table className="table table-responsive table-striped table-bordered">
                                 <thead>
                                     <tr>
                                         <th scope="col">Edit</th>
