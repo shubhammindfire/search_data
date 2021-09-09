@@ -42,3 +42,4 @@ be/config/jwt/*.pem
 ###< lexik/jwt-authentication-bundle ###
 
 be/public/uploads/
+be/public/zipFolder/

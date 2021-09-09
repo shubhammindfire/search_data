@@ -5,6 +5,8 @@ export const LOGIN_URL = BASE_SERVER_URL + "/api/login";
 export const GET_ALL_ADMINS_URL = BASE_SERVER_URL + "/api/admins";
 export const EDIT_ADMIN_BY_ID_URL = BASE_SERVER_URL + "/api/admins"; // actual endpoint - /api/admins/{id}
 export const DELETE_ADMIN_BY_ID_URL = BASE_SERVER_URL + "/api/admins"; // actual endpoint - /api/admins/{id}
+export const IMPORT_PROPERTY_RECORDS_DATA_URL =
+    BASE_SERVER_URL + "/api/property_records/import_data";
 export const GET_ALL_PROPERTY_RECORDS_URL =
     BASE_SERVER_URL + "/api/property_records";
 export const GET_PROPERTY_RECORD_IMAGE_URL =

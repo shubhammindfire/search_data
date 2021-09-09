@@ -1,10 +1,10 @@
 import axios from "axios";
 import React, { useState } from "react";
+import Loader from "react-loader-spinner";
 import { Button, Modal, ModalBody, ModalHeader } from "reactstrap";
 import { ADD_PROPERTY_RECORD_URL } from "../../constants";
 import { addPropertyRecord } from "../../redux/property_record/propertyRecordActions";
 import { validateEmptyField } from "../utils/validate";
-import LoadingModal from "./loadingModal";
 import TextField from "./textField";
 
 function AddPropertyRecordModal(props) {
@@ -129,10 +129,25 @@ function AddPropertyRecordModal(props) {
         <Modal isOpen={true} autoFocus={false}>
             <ModalHeader>Add Property Record</ModalHeader>
             <ModalBody>
+                {showLoading ? (
+                    <div className="m-3">
+                        <Loader
+                            type="Watch"
+                            color="#000000"
+                            height={80}
+                            width={80}
+                        />
+                        Please Wait..
+                    </div>
+                ) : null}
                 <form onSubmit={handleAddPropertyRecord}>
+                    <label htmlFor="image" className="d-block">
+                        Image
+                    </label>
                     <input
                         type="file"
                         id="image"
+                        className="m-2"
                         accept="image/png, image/jpeg"
                         onChange={handleImageChange}
                     />
@@ -191,7 +206,6 @@ function AddPropertyRecordModal(props) {
                             {successMessage}
                         </p>
                     ) : null}
-                    {showLoading ? <LoadingModal /> : null}
                     <Button
                         type="submit"
                         color="primary"

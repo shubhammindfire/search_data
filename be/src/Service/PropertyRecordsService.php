@@ -9,6 +9,8 @@ use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Mime\Message;
+use ZipArchive;
 
 class PropertyRecordsService extends BaseService
 {
@@ -32,6 +34,121 @@ class PropertyRecordsService extends BaseService
 		$this->logger = $logger;
 		$this->doctrine = $doctrine;
 		$this->repository = $this->doctrine->getRepository(PropertyRecords::class);
+	}
+
+	public function truncateTable($tablename)
+	{
+		/** @var EntityManager $em */
+		$em = $this->doctrine->getManager();
+		$connection = $em->getConnection();
+		$platform = $connection->getDatabasePlatform();
+		$truncateSql = $platform->getTruncateTableSQL($tablename);
+		$connection->executeStatement($truncateSql);
+		$this->logger->info("Table $tablename truncated successfully");
+	}
+
+	/**
+	 * @param UploadedFile $csvFile
+	 * @param UploadedFile $zipFile
+	 * @param String $destination
+	 * @return array
+	 */
+	public function importData(UploadedFile $csvFile, UploadedFile $zipFile, String $destination): array
+	{
+		try {
+			$TABLE_NAME = "property_records";
+			$ZIP_FOLDER_DESTINATION = "zipFolder";
+
+			$propertyRecordsList = array();
+
+			$isTruncated = false; // to keep track if table has been truncated or not
+			$isExtracted = false; // to keep track if the zip has been extracted or not
+			$isUploadedRemoved = false; // to keep track if the uploaded folder has been deleted or not
+			// read the csv file
+			$rowNo = 1;
+			if (($fp = fopen($csvFile, "r")) !== FALSE) {
+				while (($row = fgetcsv($fp, 1000, ",")) !== FALSE) {
+					if ($rowNo === 1) {
+						// check that the format of the csv is as expected
+						if ($row[0] !== 'image' || $row[1] !== 'section' || $row[2] !== 'town' || $row[3] !== 'range' || $row[4] !== 'subdivision' || $row[5] !== 'description') {
+							// if the format of the csv file is incorrect then send error response
+							$this->logger->info("Wrong CSV file format");
+							return ["status" => "Error", "message" => "Error: Wrong CSV format. Please upload CSV file with data in expected format only."];
+						}
+					} else {
+						$zip = new ZipArchive();
+						if ($isExtracted === false) {
+							if ($zip->open($zipFile) === TRUE) {
+								$zip->extractTo($ZIP_FOLDER_DESTINATION);
+								$zip->close();
+								$isExtracted = true;
+								$this->logger->info("Extracted zip file");
+							} else {
+								$this->logger->info("Unable to extract zip file");
+								return ["status" => "Error", "message" => "Error: Unable to extract zip file"];
+							}
+						}
+						// clear the property_records table
+						if ($isTruncated === false) {
+							$this->truncateTable($TABLE_NAME);
+							$isTruncated = true;
+						}
+						// clear the uploads directory
+						$filesystem = new Filesystem();
+						if ($isUploadedRemoved === false) {
+							$filesystem->remove($destination);
+							$isUploadedRemoved = true;
+						}
+
+						$propertyRecord = new PropertyRecords();
+
+						// add data to the new PropertyRecords object
+						$propertyRecord->setSection($row[1]);
+						$propertyRecord->setTown($row[2]);
+						$propertyRecord->setRng($row[3]);
+						$propertyRecord->setSubdivision($row[4]);
+						$propertyRecord->setDescription($row[5]);
+
+						$em = $this->doctrine->getManager();
+						$em->persist($propertyRecord);
+						$em->flush();
+
+						// after the PropertyRecord is saved to database copy the images from the zip folder
+						if ($row[0] !== null && $row[0] !== "") {
+							$newFilename = $propertyRecord->getId() . '_' .  $row[0];
+
+							$filesystem = new Filesystem();
+							$filename = $row[0];
+							if ($filesystem->exists($ZIP_FOLDER_DESTINATION . '/' .  $filename)) {
+								$newFilename = $propertyRecord->getId() . "_" . $filename;
+								$filesystem->copy($ZIP_FOLDER_DESTINATION . '/' . $filename, $destination . '/' . $newFilename);
+
+								// if the image is available and saved in the uploads/ directory successfully
+								// now save the image name in the database
+								$propertyRecord->setImage($filename);
+								$em->persist($propertyRecord);
+								$em->flush();
+
+
+								$this->logger->info("Added new file with filename as $newFilename to $destination");
+							} else {
+								$this->logger->info("No image found with filename as $filename");
+							}
+						}
+						array_push($propertyRecordsList, $propertyRecord);
+					}
+					$rowNo++;
+				}
+				fclose($fp);
+				// removing the zip folder after the contents are copied to uploads/ directory
+				$filesystem->remove($ZIP_FOLDER_DESTINATION);
+			}
+			$this->logger->info("Successfully imported new PropertyRecord data");
+			return ["status" => "Success", "message" => $propertyRecordsList];
+		} catch (Exception $exception) {
+			$this->logger->error("Failed to successfully import new PropertyRecord data. Error: " . $exception->getMessage());
+			return ["status" => "Error", "message" => "Error: Failed to import new PropertyRecord data"];
+		}
 	}
 
 	/**

@@ -3,13 +3,9 @@
 namespace App\Controller;
 
 use App\Service\PropertyRecordsService;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\SerializerInterface;
-use Symfony\Component\HttpFoundation\File\File as FileObject;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -18,6 +14,28 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class PropertyRecordsController extends AbstractController
 {
+	/**
+	 * @Route("/import_data", methods={"POST"})
+	 */
+	public function importData(Request $request, PropertyRecordsService $propertyRecordsService)
+	{
+		/** @var UploadedFile $csvFile */
+		$csvFile = $request->files->get('csv-file');
+		$zipFile = $request->files->get('zip-file');
+
+		$destination = $this->getParameter('kernel.project_dir') . '/public/uploads';
+
+		if ($csvFile === null)
+			return $this->json(["Error" => "CSV file not found"], Response::HTTP_BAD_REQUEST);
+		if ($zipFile === null)
+			return $this->json(["Error" => "ZIP file not found"], Response::HTTP_BAD_REQUEST);
+
+		$response = $propertyRecordsService->importData($csvFile, $zipFile, $destination);
+
+		if ($response["status"] === "Success")
+			return $this->json($response['message'], Response::HTTP_CREATED);
+		return $this->json(["Error" => $response["message"]], Response::HTTP_BAD_REQUEST);
+	}
 
 	/**
 	 * @Route("/{id}/imageUrl", methods={"GET"})

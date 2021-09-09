@@ -16,6 +16,7 @@ import LoadingModal from "../widgets/loadingModal";
 import AddPropertyRecordModal from "../widgets/addPropertyRecordModal";
 import ImageModal from "../widgets/imageModal";
 import EditPropertyRecordModal from "../widgets/editPropertyRecordModal";
+import ImportModal from "../widgets/importModal";
 
 const PropertyRecordsManagement = () => {
     const dispatch = useDispatch();
@@ -27,6 +28,7 @@ const PropertyRecordsManagement = () => {
     const [currentImageRecordId, setCurrentImageRecordId] = useState(null);
     const [isSessionExpired, setIsSessionExpired] = useState(false);
     const [showLoadingModal, setShowLoadingModal] = useState(false);
+    const [showImportModal, setShowImportModal] = useState(false);
     const [showAddPropertyRecordModal, setShowAddPropertyRecordModal] =
         useState(false);
     const [showEditPropertyRecordModal, setShowEditPropertyRecordModal] =
@@ -64,6 +66,13 @@ const PropertyRecordsManagement = () => {
                     <div className="m-4">
                         <h2>Property Records</h2>
                         {showLoadingModal ? <LoadingModal /> : null}
+                        {showImportModal ? (
+                            <ImportModal
+                                setShowImportModal={setShowImportModal}
+                                jwt={jwt}
+                                dispatch={dispatch}
+                            />
+                        ) : null}
                         {showImageModal ? (
                             <ImageModal
                                 currentImageRecordId={currentImageRecordId}
@@ -94,16 +103,28 @@ const PropertyRecordsManagement = () => {
                                 }
                             />
                         ) : null}
-                        <Button
-                            className="float-end bg-success border border-0"
-                            title="Add a new Property Record"
-                            onClick={(e) => {
-                                e.preventDefault();
-                                setShowAddPropertyRecordModal(true);
-                            }}
-                        >
-                            New
-                        </Button>
+                        <div className="float-end">
+                            <Button
+                                className="bg-primary border border-0 me-1"
+                                title="Import data to the database"
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    setShowImportModal(true);
+                                }}
+                            >
+                                Import
+                            </Button>
+                            <Button
+                                className="bg-success border border-0 ms-1"
+                                title="Add a new Property Record"
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    setShowAddPropertyRecordModal(true);
+                                }}
+                            >
+                                New
+                            </Button>
+                        </div>
                         <table className="table table-responsive">
                             <thead>
                                 <tr>

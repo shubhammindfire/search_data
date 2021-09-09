@@ -1,10 +1,10 @@
 import axios from "axios";
 import React, { useState } from "react";
+import Loader from "react-loader-spinner";
 import { Button, Modal, ModalBody, ModalHeader } from "reactstrap";
 import { EDIT_PROPERTY_RECORD_BY_ID_URL } from "../../constants";
 import { editPropertyRecordByIndex } from "../../redux/property_record/propertyRecordActions";
 import { validateEmptyField } from "../utils/validate";
-import LoadingModal from "./loadingModal";
 import TextField from "./textField";
 
 function EditPropertyRecordModal(props) {
@@ -146,6 +146,17 @@ function EditPropertyRecordModal(props) {
         <Modal isOpen={true} autoFocus={false}>
             <ModalHeader>Edit Admin</ModalHeader>
             <ModalBody>
+                {showLoading ? (
+                    <div className="m-3">
+                        <Loader
+                            type="Watch"
+                            color="#000000"
+                            height={80}
+                            width={80}
+                        />
+                        Please Wait..
+                    </div>
+                ) : null}
                 <form onSubmit={handleEditPropertyRecord}>
                     <input
                         type="file"
@@ -213,7 +224,6 @@ function EditPropertyRecordModal(props) {
                             {successMessage}
                         </p>
                     ) : null}
-                    {showLoading ? <LoadingModal /> : null}
                     <Button
                         type="submit"
                         color="primary"
