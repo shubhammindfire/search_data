@@ -90,95 +90,105 @@ const AdminManagement = () => {
                         >
                             New
                         </Button>
-                        <table className="table table-responsive">
-                            <thead>
-                                <tr>
-                                    <th scope="col">Edit</th>
-                                    <th scope="col">First Name</th>
-                                    <th scope="col">Last Name</th>
-                                    <th scope="col">Email</th>
-                                    <th scope="col">Remove</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {admins.map((admin, index) => {
-                                    return (
-                                        <tr key={admin.email}>
-                                            {/* current admin can't edit oneself therefore edit icon is not shown */}
-                                            <td>
-                                                {currentAdmin.email !==
-                                                admin.email ? (
-                                                    <button
-                                                        className="iconButton"
-                                                        onClick={(e) => {
-                                                            e.preventDefault();
+                        {admins.length !== 0 ? (
+                            <table className="table table-responsive">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Edit</th>
+                                        <th scope="col">First Name</th>
+                                        <th scope="col">Last Name</th>
+                                        <th scope="col">Email</th>
+                                        <th scope="col">Remove</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {admins.map((admin, index) => {
+                                        return (
+                                            <tr key={admin.email}>
+                                                {/* current admin can't edit oneself therefore edit icon is not shown */}
+                                                <td>
+                                                    {currentAdmin.email !==
+                                                    admin.email ? (
+                                                        <button
+                                                            className="iconButton"
+                                                            onClick={(e) => {
+                                                                e.preventDefault();
 
-                                                            setCurrentEditAdminIndex(
-                                                                index
-                                                            );
-                                                            setShowEditAdminModal(
-                                                                true
-                                                            );
-                                                        }}
-                                                    >
-                                                        <FontAwesomeIcon
-                                                            icon={faPen}
-                                                            color="#32A6E9"
-                                                        />
-                                                    </button>
-                                                ) : (
-                                                    <button
-                                                        className="iconButton"
-                                                        title="An admin cannot edit oneself"
-                                                    >
-                                                        <FontAwesomeIcon
-                                                            icon={faPen}
-                                                            color="#AEAEAE"
-                                                        />
-                                                    </button>
-                                                )}
-                                            </td>
-                                            <td>{admin.firstname}</td>
-                                            <td>{admin.lastname}</td>
-                                            <td>{admin.email}</td>
-                                            {/* current admin can't delete oneself therefore delete icon is not shown */}
-                                            <td>
-                                                {currentAdmin.email !==
-                                                admin.email ? (
-                                                    <button
-                                                        className="iconButton"
-                                                        onClick={(e) =>
-                                                            handleDeleteAdmin(
-                                                                index,
-                                                                admin.id,
-                                                                jwt,
-                                                                setShowLoadingModal,
-                                                                dispatch
-                                                            )
-                                                        }
-                                                    >
-                                                        <FontAwesomeIcon
-                                                            icon={faTrashAlt}
-                                                            color="#FF0000"
-                                                        />
-                                                    </button>
-                                                ) : (
-                                                    <button
-                                                        className="iconButton"
-                                                        title="An admin cannot delete oneself"
-                                                    >
-                                                        <FontAwesomeIcon
-                                                            icon={faTrashAlt}
-                                                            color="#AEAEAE"
-                                                        />
-                                                    </button>
-                                                )}
-                                            </td>
-                                        </tr>
-                                    );
-                                })}
-                            </tbody>
-                        </table>
+                                                                setCurrentEditAdminIndex(
+                                                                    index
+                                                                );
+                                                                setShowEditAdminModal(
+                                                                    true
+                                                                );
+                                                            }}
+                                                        >
+                                                            <FontAwesomeIcon
+                                                                icon={faPen}
+                                                                color="#32A6E9"
+                                                            />
+                                                        </button>
+                                                    ) : (
+                                                        <button
+                                                            className="iconButton"
+                                                            title="An admin cannot edit oneself"
+                                                        >
+                                                            <FontAwesomeIcon
+                                                                icon={faPen}
+                                                                color="#AEAEAE"
+                                                            />
+                                                        </button>
+                                                    )}
+                                                </td>
+                                                <td>{admin.firstname}</td>
+                                                <td>{admin.lastname}</td>
+                                                <td>{admin.email}</td>
+                                                {/* current admin can't delete oneself therefore delete icon is not shown */}
+                                                <td>
+                                                    {currentAdmin.email !==
+                                                    admin.email ? (
+                                                        <button
+                                                            className="iconButton"
+                                                            onClick={(e) =>
+                                                                handleDeleteAdmin(
+                                                                    index,
+                                                                    admin.id,
+                                                                    jwt,
+                                                                    setShowLoadingModal,
+                                                                    dispatch
+                                                                )
+                                                            }
+                                                        >
+                                                            <FontAwesomeIcon
+                                                                icon={
+                                                                    faTrashAlt
+                                                                }
+                                                                color="#FF0000"
+                                                            />
+                                                        </button>
+                                                    ) : (
+                                                        <button
+                                                            className="iconButton"
+                                                            title="An admin cannot delete oneself"
+                                                        >
+                                                            <FontAwesomeIcon
+                                                                icon={
+                                                                    faTrashAlt
+                                                                }
+                                                                color="#AEAEAE"
+                                                            />
+                                                        </button>
+                                                    )}
+                                                </td>
+                                            </tr>
+                                        );
+                                    })}
+                                </tbody>
+                            </table>
+                        ) : (
+                            <h3 className="text-center mt-5">
+                                No data Available
+                            </h3>
+                        )}
                     </div>
                 </div>
             )}

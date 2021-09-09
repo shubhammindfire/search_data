@@ -10,7 +10,7 @@ import {
     addAllPropertyRecords,
     removeAllPropertyRecords,
 } from "./../../redux/property_record/propertyRecordActions";
-import { Button } from "reactstrap";
+import { Button, Jumbotron } from "reactstrap";
 import handleDeletePropertyRecord from "../utils/deletePropertyRecord";
 import LoadingModal from "../widgets/loadingModal";
 import AddPropertyRecordModal from "../widgets/addPropertyRecordModal";
@@ -125,111 +125,131 @@ const PropertyRecordsManagement = () => {
                                 New
                             </Button>
                         </div>
-                        <table className="table table-responsive">
-                            <thead>
-                                <tr>
-                                    <th scope="col">Edit</th>
-                                    <th scope="col">Image</th>
-                                    <th scope="col">Section</th>
-                                    <th scope="col">Town</th>
-                                    <th scope="col">Range</th>
-                                    <th scope="col">Subdivision</th>
-                                    <th scope="col">Description</th>
-                                    <th scope="col">Remove</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {propertyRecords.map(
-                                    (propertyRecord, index) => {
-                                        return (
-                                            <tr key={propertyRecord.id}>
-                                                <td>
-                                                    <button
-                                                        className="iconButton"
-                                                        onClick={(e) => {
-                                                            e.preventDefault();
-
-                                                            setCurrentEditPropertyRecordIndex(
-                                                                index
-                                                            );
-                                                            setShowEditPropertyRecordModal(
-                                                                true
-                                                            );
-                                                        }}
-                                                    >
-                                                        <FontAwesomeIcon
-                                                            icon={faPen}
-                                                            color="#32A6E9"
-                                                        />
-                                                    </button>
-                                                </td>
-                                                <td>
-                                                    {propertyRecord.image ? (
+                        {propertyRecords.length !== 0 ? (
+                            <table className="table table-responsive">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Edit</th>
+                                        <th scope="col">Image</th>
+                                        <th scope="col">Section</th>
+                                        <th scope="col">Town</th>
+                                        <th scope="col">Range</th>
+                                        <th scope="col">Subdivision</th>
+                                        <th scope="col">Description</th>
+                                        <th scope="col">Remove</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {propertyRecords.map(
+                                        (propertyRecord, index) => {
+                                            return (
+                                                <tr key={propertyRecord.id}>
+                                                    <td>
                                                         <button
                                                             className="iconButton"
                                                             onClick={(e) => {
                                                                 e.preventDefault();
-                                                                setCurrentImageRecordId(
-                                                                    propertyRecord.id
+
+                                                                setCurrentEditPropertyRecordIndex(
+                                                                    index
                                                                 );
-                                                                setShowImageModal(
+                                                                setShowEditPropertyRecordModal(
                                                                     true
                                                                 );
                                                             }}
                                                         >
                                                             <FontAwesomeIcon
-                                                                icon={faImage}
+                                                                icon={faPen}
                                                                 color="#32A6E9"
-                                                                size="2x"
                                                             />
                                                         </button>
-                                                    ) : (
-                                                        <button className="iconButton">
-                                                            <FontAwesomeIcon
-                                                                icon={faImage}
-                                                                color="#AEAEAE"
-                                                                size="2x"
-                                                                title="No image"
-                                                            />
-                                                        </button>
-                                                    )}
-                                                </td>
-                                                <td>
-                                                    {propertyRecord.section}
-                                                </td>
-                                                <td>{propertyRecord.town}</td>
-                                                <td>{propertyRecord.rng}</td>
-                                                <td>
-                                                    {propertyRecord.subdivision}
-                                                </td>
-                                                <td>
-                                                    {propertyRecord.description}
-                                                </td>
-                                                <td>
-                                                    <button
-                                                        className="iconButton"
-                                                        onClick={(e) =>
-                                                            handleDeletePropertyRecord(
-                                                                index,
-                                                                propertyRecord.id,
-                                                                jwt,
-                                                                setShowLoadingModal,
-                                                                dispatch
-                                                            )
+                                                    </td>
+                                                    <td>
+                                                        {propertyRecord.image ? (
+                                                            <button
+                                                                className="iconButton"
+                                                                onClick={(
+                                                                    e
+                                                                ) => {
+                                                                    e.preventDefault();
+                                                                    setCurrentImageRecordId(
+                                                                        propertyRecord.id
+                                                                    );
+                                                                    setShowImageModal(
+                                                                        true
+                                                                    );
+                                                                }}
+                                                            >
+                                                                <FontAwesomeIcon
+                                                                    icon={
+                                                                        faImage
+                                                                    }
+                                                                    color="#32A6E9"
+                                                                    size="2x"
+                                                                />
+                                                            </button>
+                                                        ) : (
+                                                            <button className="iconButton">
+                                                                <FontAwesomeIcon
+                                                                    icon={
+                                                                        faImage
+                                                                    }
+                                                                    color="#AEAEAE"
+                                                                    size="2x"
+                                                                    title="No image"
+                                                                />
+                                                            </button>
+                                                        )}
+                                                    </td>
+                                                    <td>
+                                                        {propertyRecord.section}
+                                                    </td>
+                                                    <td>
+                                                        {propertyRecord.town}
+                                                    </td>
+                                                    <td>
+                                                        {propertyRecord.rng}
+                                                    </td>
+                                                    <td>
+                                                        {
+                                                            propertyRecord.subdivision
                                                         }
-                                                    >
-                                                        <FontAwesomeIcon
-                                                            icon={faTrashAlt}
-                                                            color="#FF0000"
-                                                        />
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        );
-                                    }
-                                )}
-                            </tbody>
-                        </table>
+                                                    </td>
+                                                    <td>
+                                                        {
+                                                            propertyRecord.description
+                                                        }
+                                                    </td>
+                                                    <td>
+                                                        <button
+                                                            className="iconButton"
+                                                            onClick={(e) =>
+                                                                handleDeletePropertyRecord(
+                                                                    index,
+                                                                    propertyRecord.id,
+                                                                    jwt,
+                                                                    setShowLoadingModal,
+                                                                    dispatch
+                                                                )
+                                                            }
+                                                        >
+                                                            <FontAwesomeIcon
+                                                                icon={
+                                                                    faTrashAlt
+                                                                }
+                                                                color="#FF0000"
+                                                            />
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            );
+                                        }
+                                    )}
+                                </tbody>
+                            </table>
+                        ) : (
+                            <h3 className="text-center mt-5">No data Available</h3>
+                        )}
                     </div>
                 </div>
             )}

@@ -14,6 +14,7 @@ import {
     ADMIN_MANAGEMENT_ROUTE,
     LOGIN_ROUTE,
     PROPERTY_RECORDS_MANAGEMENT_ROUTE,
+    SEARCH_ROUTE,
 } from "../../constants";
 import {
     removeAuthJwt,
@@ -41,7 +42,9 @@ const ProjectNavbar = () => {
                 <NavbarBrand href="/" className="mr-auto">
                     Admin Dashboard
                 </NavbarBrand>
-                <NavbarText className="ms-auto">Hi, {currentAdmin.email}</NavbarText>
+                <NavbarText className="ms-auto">
+                    Hi, {currentAdmin.email}
+                </NavbarText>
                 <NavbarToggler onClick={toggleNavbar} className="me-2 ms-2" />
                 <Collapse isOpen={!collapsed} navbar>
                     <Nav navbar>
@@ -54,6 +57,9 @@ const ProjectNavbar = () => {
                             <NavLink href={PROPERTY_RECORDS_MANAGEMENT_ROUTE}>
                                 Property Records Management
                             </NavLink>
+                        </NavItem>
+                        <NavItem>
+                            <NavLink href={SEARCH_ROUTE}>Go to Search</NavLink>
                         </NavItem>
                         <NavItem>
                             <NavLink href={LOGIN_ROUTE} onClick={handleLogout}>

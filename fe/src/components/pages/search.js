@@ -29,6 +29,7 @@ import ImageModal from "../widgets/imageModal";
 
 const Search = () => {
     const dispatch = useDispatch();
+    const jwt = useSelector((state) => state.authReducer.jwt);
     const propertyRecords = useSelector(
         (state) => state.propertyRecordReducer.propertyRecords
     );
@@ -186,15 +187,21 @@ const Search = () => {
         <div>
             <div className="m-4">
                 <h2>Property Records</h2>
-                <div className="float-end">
-                    Admin?{" "}
-                    <Link to={LOGIN_ROUTE} className="nounderline">
-                        Login
+                {jwt !== null && jwt !== "" ? (
+                    <Link to={LOGIN_ROUTE} className="nounderline float-end">
+                        Go to Admin Portal
                     </Link>
-                </div>
+                ) : (
+                    <div className="float-end">
+                        Admin?{" "}
+                        <Link to={LOGIN_ROUTE} className="nounderline">
+                            Login
+                        </Link>
+                    </div>
+                )}
                 <div className="d-flex flex-column justify-content-center align-items-center">
-                    <div className="rounded-3 shadow p-4 m-auto">
-                        <p className="mb-4 fs-1">Search</p>
+                    <div className="rounded-3 shadow p-4 mx-auto mt-3">
+                        <p className="mb-3 fs-2">Search</p>
                         {showImageModal ? (
                             <ImageModal
                                 currentImageRecordId={currentImageRecordId}
@@ -286,150 +293,155 @@ const Search = () => {
                     </Dropdown>
                     entries
                 </div>
-                <table className="table table-responsive table-striped table-bordered">
-                    <thead>
-                        <tr>
-                            <th scope="col">Image</th>
-                            <th
-                                scope="col"
-                                onClick={(e) => {
-                                    handleSortChange(e, LOCAL_SECTION);
-                                }}
-                            >
-                                Section{" "}
-                                {sectionSort === "ASC" ? (
-                                    <FontAwesomeIcon
-                                        icon={faArrowUp}
-                                        title="Sort is ASC"
-                                    />
-                                ) : sectionSort === "DESC" ? (
-                                    <FontAwesomeIcon
-                                        icon={faArrowDown}
-                                        title="Sort is DESC"
-                                    />
-                                ) : null}
-                            </th>
-                            <th
-                                scope="col"
-                                onClick={(e) => {
-                                    handleSortChange(e, LOCAL_TOWN);
-                                }}
-                            >
-                                Town{" "}
-                                {townSort === "ASC" ? (
-                                    <FontAwesomeIcon
-                                        icon={faArrowUp}
-                                        title="Sort is ASC"
-                                    />
-                                ) : townSort === "DESC" ? (
-                                    <FontAwesomeIcon
-                                        icon={faArrowDown}
-                                        title={"Sort is DESC"}
-                                    />
-                                ) : null}
-                            </th>
-                            <th
-                                scope="col"
-                                onClick={(e) => {
-                                    handleSortChange(e, LOCAL_RANGE);
-                                }}
-                            >
-                                Range{" "}
-                                {rangeSort === "ASC" ? (
-                                    <FontAwesomeIcon
-                                        icon={faArrowUp}
-                                        title="Sort is ASC"
-                                    />
-                                ) : rangeSort === "DESC" ? (
-                                    <FontAwesomeIcon
-                                        icon={faArrowDown}
-                                        title="Sort is DESC"
-                                    />
-                                ) : null}
-                            </th>
-                            <th
-                                scope="col"
-                                onClick={(e) => {
-                                    handleSortChange(e, LOCAL_SUBDIVISION);
-                                }}
-                            >
-                                Subdivision{" "}
-                                {subdivisionSort === "ASC" ? (
-                                    <FontAwesomeIcon
-                                        icon={faArrowUp}
-                                        title="Sort is ASC"
-                                    />
-                                ) : subdivisionSort === "DESC" ? (
-                                    <FontAwesomeIcon
-                                        icon={faArrowDown}
-                                        title="Sort is DESC"
-                                    />
-                                ) : null}
-                            </th>
-                            <th
-                                scope="col"
-                                onClick={(e) => {
-                                    handleSortChange(e, LOCAL_DESCRIPTION);
-                                }}
-                            >
-                                Description{" "}
-                                {descriptionSort === "ASC" ? (
-                                    <FontAwesomeIcon
-                                        icon={faArrowUp}
-                                        title="Sort is ASC"
-                                    />
-                                ) : descriptionSort === "DESC" ? (
-                                    <FontAwesomeIcon
-                                        icon={faArrowDown}
-                                        title="Sort is DESC"
-                                    />
-                                ) : null}
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {propertyRecords.map((propertyRecord, index) => {
-                            return (
-                                <tr key={propertyRecord.id}>
-                                    <td>
-                                        {propertyRecord.image ? (
-                                            <button
-                                                className="iconButton"
-                                                onClick={(e) => {
-                                                    e.preventDefault();
-                                                    setCurrentImageRecordId(
-                                                        propertyRecord.id
-                                                    );
-                                                    setShowImageModal(true);
-                                                }}
-                                            >
-                                                <FontAwesomeIcon
-                                                    icon={faImage}
-                                                    color="#32A6E9"
-                                                    size="2x"
-                                                />
-                                            </button>
-                                        ) : (
-                                            <button className="iconButton">
-                                                <FontAwesomeIcon
-                                                    icon={faImage}
-                                                    color="#AEAEAE"
-                                                    size="2x"
-                                                    title="No image"
-                                                />
-                                            </button>
-                                        )}
-                                    </td>
-                                    <td>{propertyRecord.section}</td>
-                                    <td>{propertyRecord.town}</td>
-                                    <td>{propertyRecord.rng}</td>
-                                    <td>{propertyRecord.subdivision}</td>
-                                    <td>{propertyRecord.description}</td>
-                                </tr>
-                            );
-                        })}
-                    </tbody>
-                </table>
+
+                {propertyRecords.length !== 0 ? (
+                    <table className="table table-responsive table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <th scope="col">Image</th>
+                                <th
+                                    scope="col"
+                                    onClick={(e) => {
+                                        handleSortChange(e, LOCAL_SECTION);
+                                    }}
+                                >
+                                    Section{" "}
+                                    {sectionSort === "ASC" ? (
+                                        <FontAwesomeIcon
+                                            icon={faArrowUp}
+                                            title="Sort is ASC"
+                                        />
+                                    ) : sectionSort === "DESC" ? (
+                                        <FontAwesomeIcon
+                                            icon={faArrowDown}
+                                            title="Sort is DESC"
+                                        />
+                                    ) : null}
+                                </th>
+                                <th
+                                    scope="col"
+                                    onClick={(e) => {
+                                        handleSortChange(e, LOCAL_TOWN);
+                                    }}
+                                >
+                                    Town{" "}
+                                    {townSort === "ASC" ? (
+                                        <FontAwesomeIcon
+                                            icon={faArrowUp}
+                                            title="Sort is ASC"
+                                        />
+                                    ) : townSort === "DESC" ? (
+                                        <FontAwesomeIcon
+                                            icon={faArrowDown}
+                                            title={"Sort is DESC"}
+                                        />
+                                    ) : null}
+                                </th>
+                                <th
+                                    scope="col"
+                                    onClick={(e) => {
+                                        handleSortChange(e, LOCAL_RANGE);
+                                    }}
+                                >
+                                    Range{" "}
+                                    {rangeSort === "ASC" ? (
+                                        <FontAwesomeIcon
+                                            icon={faArrowUp}
+                                            title="Sort is ASC"
+                                        />
+                                    ) : rangeSort === "DESC" ? (
+                                        <FontAwesomeIcon
+                                            icon={faArrowDown}
+                                            title="Sort is DESC"
+                                        />
+                                    ) : null}
+                                </th>
+                                <th
+                                    scope="col"
+                                    onClick={(e) => {
+                                        handleSortChange(e, LOCAL_SUBDIVISION);
+                                    }}
+                                >
+                                    Subdivision{" "}
+                                    {subdivisionSort === "ASC" ? (
+                                        <FontAwesomeIcon
+                                            icon={faArrowUp}
+                                            title="Sort is ASC"
+                                        />
+                                    ) : subdivisionSort === "DESC" ? (
+                                        <FontAwesomeIcon
+                                            icon={faArrowDown}
+                                            title="Sort is DESC"
+                                        />
+                                    ) : null}
+                                </th>
+                                <th
+                                    scope="col"
+                                    onClick={(e) => {
+                                        handleSortChange(e, LOCAL_DESCRIPTION);
+                                    }}
+                                >
+                                    Description{" "}
+                                    {descriptionSort === "ASC" ? (
+                                        <FontAwesomeIcon
+                                            icon={faArrowUp}
+                                            title="Sort is ASC"
+                                        />
+                                    ) : descriptionSort === "DESC" ? (
+                                        <FontAwesomeIcon
+                                            icon={faArrowDown}
+                                            title="Sort is DESC"
+                                        />
+                                    ) : null}
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {propertyRecords.map((propertyRecord, index) => {
+                                return (
+                                    <tr key={propertyRecord.id}>
+                                        <td>
+                                            {propertyRecord.image ? (
+                                                <button
+                                                    className="iconButton"
+                                                    onClick={(e) => {
+                                                        e.preventDefault();
+                                                        setCurrentImageRecordId(
+                                                            propertyRecord.id
+                                                        );
+                                                        setShowImageModal(true);
+                                                    }}
+                                                >
+                                                    <FontAwesomeIcon
+                                                        icon={faImage}
+                                                        color="#32A6E9"
+                                                        size="2x"
+                                                    />
+                                                </button>
+                                            ) : (
+                                                <button className="iconButton">
+                                                    <FontAwesomeIcon
+                                                        icon={faImage}
+                                                        color="#AEAEAE"
+                                                        size="2x"
+                                                        title="No image"
+                                                    />
+                                                </button>
+                                            )}
+                                        </td>
+                                        <td>{propertyRecord.section}</td>
+                                        <td>{propertyRecord.town}</td>
+                                        <td>{propertyRecord.rng}</td>
+                                        <td>{propertyRecord.subdivision}</td>
+                                        <td>{propertyRecord.description}</td>
+                                    </tr>
+                                );
+                            })}
+                        </tbody>
+                    </table>
+                ) : (
+                    <h3 className="text-center mt-5">No data Available</h3>
+                )}
 
                 <Pagination
                     aria-label="Page navigation example"
