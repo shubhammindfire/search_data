@@ -19,6 +19,18 @@ class AdminsRepository extends ServiceEntityRepository
         parent::__construct($registry, Admins::class);
     }
 
+    // public function getAdminCount()
+    // {
+    //     $adminCount = $this->createQueryBuilder('a')
+    //         // Filter by some parameter if you want
+    //         // ->where('a.published = 1')
+    //         ->select('count(a.id)')
+    //         ->getQuery()
+    //         ->getSingleScalarResult();
+
+    //     return $adminCount;
+    // }
+
     // /**
     //  * @return Admins[] Returns an array of Admins objects
     //  */

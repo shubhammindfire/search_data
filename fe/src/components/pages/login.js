@@ -27,7 +27,6 @@ function Login(props) {
     const [successMessage, setSuccessMessage] = useState(null);
 
     function handleEmailChange(e) {
-        console.log(`email = ${e.target.value}`);
         setLoginError(null);
         setEmail(e.target.value);
     }
@@ -67,7 +66,6 @@ function Login(props) {
                     password: password,
                 })
                 .then((response) => {
-                    // console.log(`Response: ${JSON.stringify(response)}`);
                     if (response.status === 200) {
                         dispatch(setAuthJwt(response.data.token));
                         dispatch(addCurrentAdmin({ email: email }));
@@ -99,10 +97,6 @@ function Login(props) {
                     if (error.response) {
                         setLoginError(error.response.data.message);
                     }
-
-                    console.log(
-                        `Axios Error: ${JSON.stringify(error.response)}`
-                    );
                 });
         }
     }

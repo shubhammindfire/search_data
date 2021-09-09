@@ -81,6 +81,9 @@ const Search = () => {
     }
 
     useEffect(() => {
+        // TODO: Use caching of data for pagination whereas sort and search will hit the api everytime
+        // on first fetch we can fetch large amount of data(and cache them) and show only 10 or 20 data in UI
+        // Now, for pagination we can use the cached data instead of hitting the api everytime
         axios
             .get(getSearchUrl())
             .then((response) => {

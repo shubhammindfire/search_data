@@ -34,11 +34,6 @@ const AdminManagement = () => {
             })
             .then((response) => {
                 dispatch(addAllAdmins(response.data["hydra:member"]));
-                // console.log(
-                //     `all admins = ${JSON.stringify(
-                //         response.data["hydra:member"]
-                //     )}`
-                // );
             })
             .catch((error) => {
                 if (error.response.data.code === 401) {

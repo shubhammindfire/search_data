@@ -50,7 +50,6 @@ function ImportModal(props) {
             .catch((error) => {
                 setShowLoading(false);
                 if (error.response) {
-                    console.log(JSON.stringify(error.response.data["Error"]));
                     setErrorMessage(error.response.data["Error"]);
                 }
             });

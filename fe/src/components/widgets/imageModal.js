@@ -18,15 +18,10 @@ function ImageModal(props) {
                 `${GET_PROPERTY_RECORD_IMAGE_URL}/${currentImageRecordId}/imageUrl`
             )
             .then((response) => {
-                console.log(`response = ${response.data.imageUrl}`);
                 setImageUrl(response.data.imageUrl);
             })
-            .catch((error) => {
-                console.log(`error = ${JSON.stringify(error)}`);
-            });
+            .catch((error) => {});
     }, [currentImageRecordId]);
-
-    console.log(`image = ${BASE_SERVER_URL}/${imageUrl}`);
 
     return (
         <Modal isOpen={true}>
