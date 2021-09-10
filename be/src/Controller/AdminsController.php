@@ -12,33 +12,17 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class AdminsController extends AbstractController
 {
-	/**
-	 * @Route("/add_default_admin", methods={"POST"})
-	 * this method adds a default admin to the database
-	 */
-	// public function createFirstAdmin(AdminsService $adminsService)
+	// /**
+	//  * @Route("/add_default_admin", methods={"POST"})
+	//  * this method adds a default admin to the database
+	//  */
+	// public function createDefaultAdmin(AdminsService $adminsService)
 	// {
 	// 	$response = $adminsService->createFirstAdmin();
 	// 	if ($response["status"] === "Success")
 	// 		return $this->json(null, Response::HTTP_CREATED);
 	// 	return $this->json(["Error" => $response["message"]], Response::HTTP_INTERNAL_SERVER_ERROR);
 	// }
-
-	/**
-	 * @Route("/get_admin_count", methods={"GET"})
-	 * this method returns number of admins in the database
-	 */
-	// public function getAdminCount(AdminsService $adminsService)
-	// {
-	// 	$entityManager = $this->getDoctrine()->getManager();
-	// 	$plopRepository = $entityManager->getRepository(Admins::class);
-	// 	$plops = $plopRepository->getAdminCount();
-	// 	$response = $adminsService->getAdminCount();
-	// 	if ($response["status"] === "Success")
-	// 		return $this->json($response['message'], Response::HTTP_OK);
-	// 	return $this->json(["Error" => $response["message"]], Response::HTTP_NOT_FOUND);
-	// }
-
 
 	/**
 	 * @Route("/{id}", methods={"DELETE"})

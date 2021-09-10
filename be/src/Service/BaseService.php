@@ -28,6 +28,13 @@ abstract class BaseService
      */
     protected $logger;
 
+    function __construct(ContainerInterface $serviceContainer, EntityManager $entityManager, LoggerInterface $logger)
+    {
+        $this->serviceContainer = $serviceContainer;
+        $this->entityManager = $entityManager;
+        $this->logger = $logger;
+    }
+
     /**
      * @return ContainerInterface
      */

@@ -49,6 +49,20 @@ class PropertyRecordsController extends AbstractController
 		return $this->json(["Error" => $response["message"]], Response::HTTP_NOT_FOUND);
 	}
 
+	// /**
+	//  * @Route("", methods={"GET"})
+	//  */
+	// public function filterFullText(Request $request, PropertyRecordsService $propertyRecordsService)
+	// {
+	// 	$subdivision = $request->get('subdivision');
+	// 	var_dump($subdivision);
+	// 	$response = $propertyRecordsService->filterFullText($subdivision, 'subdivision', 'property_records');
+
+	// 	if ($response["status"] === "Success")
+	// 		return $this->json($response['message'], Response::HTTP_CREATED);
+	// 	return $this->json(["Error" => $response["message"]], Response::HTTP_BAD_REQUEST);
+	// }
+
 	/**
 	 * @Route("", methods={"POST"})
 	 */

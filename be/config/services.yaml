@@ -39,3 +39,11 @@ services:
         arguments:
             - "@monolog.logger"
             - "@doctrine"
+
+    SearchData.property_records_service:
+        class: App\Service\PropertyRecordsService
+        parent: SearchData.base_service
+        public: true
+        arguments:
+            - "@monolog.logger"
+            - "@doctrine"

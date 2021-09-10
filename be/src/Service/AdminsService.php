@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Constants;
 use App\Entity\Admins;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Persistence\ObjectRepository;
@@ -32,23 +33,23 @@ class AdminsService extends BaseService
 		$this->repository = $this->doctrine->getRepository(Admins::class);
 	}
 
-	/**
-	 * This function is used to create a dummy admin for the first login when no admin is registered
-	 * otherwise the user will have to manually enter data into the database
-	 * This will not need any authentication
-	 * @return array
-	 */
-	// public function createFirstAdmin(): array
+	// /**
+	//  * This function is used to create a dummy admin for the first login when no admin is registered
+	//  * otherwise the user will have to manually enter data into the database
+	//  * This will not need any authentication
+	//  * @return array
+	//  */
+	// public function createDefaultAdmin(): array
 	// {
 	// 	try {
 	// 		/**
 	// 		 * @var Admins $admin
 	// 		 */
 	// 		$admin = new Admins();
-	// 		$admin->setFirstname('default');
-	// 		$admin->setLastname('admin');
-	// 		$admin->setEmail('admin1@email.com');
-	// 		$admin->setPassword('Password@1');
+	// 		$admin->setFirstname(Constants::DEFAULT_ADMIN_FIRST_NAME);
+	// 		$admin->setLastname(Constants::DEFAULT_ADMIN_LAST_NAME);
+	// 		$admin->setEmail(Constants::DEFAULT_ADMIN_EMAIL);
+	// 		$admin->setPassword(Constants::DEFAULT_ADMIN_PASSWORD);
 	// 		$em = $this->doctrine->getManager();
 	// 		$em->persist($admin);
 	// 		$em->flush();
@@ -57,30 +58,7 @@ class AdminsService extends BaseService
 	// 		return ["status" => "Success"];
 	// 	} catch (Exception $exception) {
 	// 		$this->logger->error("Failed to successfully add default admin. Error: " . $exception->getMessage());
-	// 		return ["status" => "Error", "message" => "Error: Failed to add default admin"];
-	// 	}
-	// }
-
-	/**
-	 * @return array
-	 */
-	// public function getAdminCount(): array
-	// {
-	// 	try {
-	// 		$num = $this->repository->getAdminCount();
-	// 		if ($admin === null) {
-	// 			$this->logger->error("Error: No admin found with id=$id");
-	// 			return ["status" => "Error", "message" => "No admin found with id=$id"];
-	// 		}
-	// 		$em = $this->doctrine->getManager();
-	// 		$em->remove($admin);
-	// 		$em->flush();
-
-	// 		$this->logger->info("Successfully deleted admin with id=$id");
-	// 		return ["status" => "Success"];
-	// 	} catch (Exception $exception) {
-	// 		$this->logger->error("Failed to successfully delete admin with id=$id. Error: " . $exception->getMessage());
-	// 		return ["status" => "Error", "message" => "Error: Failed to delete admin with id=$id"];
+	// 		return ["status" => "Error", "message" => "Error: Failed to add default admin" . $exception->getMessage()];
 	// 	}
 	// }
 

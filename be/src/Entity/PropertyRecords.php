@@ -11,14 +11,22 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\OrderFilter;
 
 /**
  * @ORM\Entity(repositoryClass=PropertyRecordsRepository::class)
- * @ORM\Table(name="property_records")
+ * @ORM\Table(
+ *      name="property_records",
+ *      indexes={
+ *          @ORM\Index(
+ *              columns={"subdivision"},
+ *              flags={"fulltext"}
+ *          )
+ *      }
+ * )
  * @ORM\HasLifecycleCallbacks
  * @ApiResource()
  * @ApiFilter(SearchFilter::class, properties={
  *      "section": "exact",
  *      "town": "exact",
  *      "rng": "exact",
- *      "subdivision": "partial"
+ *      "subdivision": "exact"
  * })
  * @ApiFilter(OrderFilter::class, properties={
  *      "section": "ASC",

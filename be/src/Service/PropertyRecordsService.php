@@ -9,7 +9,6 @@ use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Component\Mime\Message;
 use ZipArchive;
 
 class PropertyRecordsService extends BaseService
@@ -150,6 +149,29 @@ class PropertyRecordsService extends BaseService
 			return ["status" => "Error", "message" => "Error: Failed to import new PropertyRecord data"];
 		}
 	}
+
+	// /**
+	//  * @param String $field
+	//  * @param String $searchText
+	//  * @param String $tablename
+	//  */
+	// function filterFullText($searchText, $field = "subdivision", $tablename = "property_records")
+	// {
+	// 	$RAW_QUERY = "SELECT id, image, section, town, rng, subdivision, description FROM $tablename WHERE MATCH($field) AGAINST('${searchText}' IN NATURAL LANGUAGE MODE)";
+
+	// 	$em = $this->doctrine;
+	// 	// $statement = $this->entityManager->getConnection()->prepare($RAW_QUERY);
+	// 	$statement = $em->getConnection()->prepare($RAW_QUERY);
+	// 	$data = $statement->executeQuery();
+
+	// 	$result = [];
+	// 	foreach ($data as $key => $value) {
+	// 		$result[$key] = $value;
+	// 	}
+	// 	var_dump($result);
+
+	// 	return $result;
+	// }
 
 	/**
 	 * @param int $id

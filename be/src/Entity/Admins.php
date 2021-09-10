@@ -6,13 +6,20 @@ use App\Repository\AdminsRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Doctrine\ORM\Mapping\UniqueConstraint;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=AdminsRepository::class)
- * @ORM\Table(name="admins")
+ * @ORM\Table(
+ *      name="admins",
+ *      uniqueConstraints={
+ *        @UniqueConstraint(name="email", 
+ *            columns={"email"})
+ *      }
+ * )
  * @ORM\HasLifecycleCallbacks
  * @ApiResource(
  *      normalizationContext={
