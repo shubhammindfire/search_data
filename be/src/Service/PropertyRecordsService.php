@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Entity\PropertyRecords;
+use App\Utils\Messages;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Persistence\ObjectRepository;
 use Exception;
@@ -71,8 +72,8 @@ class PropertyRecordsService extends BaseService
 						// check that the format of the csv is as expected
 						if ($row[0] !== 'image' || $row[1] !== 'section' || $row[2] !== 'town' || $row[3] !== 'range' || $row[4] !== 'subdivision' || $row[5] !== 'description') {
 							// if the format of the csv file is incorrect then send error response
-							$this->logger->info("Wrong CSV file format");
-							return ["status" => "Error", "message" => "Error: Wrong CSV format. Please upload CSV file with data in expected format only."];
+							$this->logger->info(Messages::WRONG_CSV_FILE_FORMAT);
+							return ["status" => "Error", "message" => Messages::WRONG_CSV_FILE_FORMAT];
 						}
 					} else {
 						$zip = new ZipArchive();
@@ -83,8 +84,8 @@ class PropertyRecordsService extends BaseService
 								$isExtracted = true;
 								$this->logger->info("Extracted zip file");
 							} else {
-								$this->logger->info("Unable to extract zip file");
-								return ["status" => "Error", "message" => "Error: Unable to extract zip file"];
+								$this->logger->info(Messages::UNABLE_TO_EXTRACT_ZIP_FILE);
+								return ["status" => "Error", "message" => Messages::UNABLE_TO_EXTRACT_ZIP_FILE];
 							}
 						}
 						// clear the property_records table
@@ -145,8 +146,8 @@ class PropertyRecordsService extends BaseService
 			$this->logger->info("Successfully imported new PropertyRecord data");
 			return ["status" => "Success", "message" => $propertyRecordsList];
 		} catch (Exception $exception) {
-			$this->logger->error("Failed to successfully import new PropertyRecord data. Error: " . $exception->getMessage());
-			return ["status" => "Error", "message" => "Error: Failed to import new PropertyRecord data"];
+			$this->logger->error(Messages::FAILED_TO_IMPORT_DATA . " Error: " . $exception->getMessage());
+			return ["status" => "Error", "message" => Messages::FAILED_TO_IMPORT_DATA];
 		}
 	}
 
@@ -185,8 +186,8 @@ class PropertyRecordsService extends BaseService
 			 */
 			$propertyRecord = $this->repository->findOneBy(['id' => $id]);
 			if ($propertyRecord === null) {
-				$this->logger->error("Error: No PropertyRecord found with id=$id");
-				return ["status" => "Error", "message" => "No PropertyRecord found with id=$id"];
+				$this->logger->error("Error: " . Messages::NO_PROPERTY_RECORD_FOUND . " with id=$id");
+				return ["status" => "Error", "message" => Messages::NO_PROPERTY_RECORD_FOUND . " with id=$id"];
 			}
 
 			$filesystem = new Filesystem();
@@ -205,8 +206,8 @@ class PropertyRecordsService extends BaseService
 			$this->logger->info("Successfully deleted PropertyRecord with id=$id");
 			return ["status" => "Success"];
 		} catch (Exception $exception) {
-			$this->logger->error("Failed to successfully delete PropertyRecod with id=$id. Error: " . $exception->getMessage());
-			return ["status" => "Error", "message" => "Error: Failed to delete PropertyRecord with id=$id"];
+			$this->logger->error(Messages::PROPERTY_RECORD_DELETE_FAILURE . " with id=$id. Error: " . $exception->getMessage());
+			return ["status" => "Error", "message" => Messages::PROPERTY_RECORD_DELETE_FAILURE . " with id=$id"];
 		}
 	}
 
@@ -228,8 +229,8 @@ class PropertyRecordsService extends BaseService
 			 */
 			$propertyRecord = $this->repository->findOneBy(['id' => $id]);
 			if ($propertyRecord === null) {
-				$this->logger->error("Error: No PropertyRecord found with id=$id");
-				return ["status" => "Error", "message" => "No PropertyRecord found with id=$id"];
+				$this->logger->error(Messages::NO_PROPERTY_RECORD_FOUND . " with id=$id");
+				return ["status" => "Error", "message" => Messages::NO_PROPERTY_RECORD_FOUND . " with id=$id"];
 			}
 
 			$em = $this->doctrine->getManager();
@@ -269,8 +270,8 @@ class PropertyRecordsService extends BaseService
 			$this->logger->info("Successfully edited PropertyRecord with id=$id");
 			return ["status" => "Success"];
 		} catch (Exception $exception) {
-			$this->logger->error("Failed to successfully edit PropertyRecord with id=$id. Error: " . $exception->getMessage());
-			return ["status" => "Error", "message" => "Error: Failed to edit PropertyRecord with id=$id"];
+			$this->logger->error(Messages::PROPERTY_RECORD_EDIT_FAILURE . " with id=$id. Error: " . $exception->getMessage());
+			return ["status" => "Error", "message" => Messages::PROPERTY_RECORD_EDIT_FAILURE . " with id=$id"];
 		}
 	}
 
@@ -313,8 +314,8 @@ class PropertyRecordsService extends BaseService
 			$this->logger->info("Successfully added PropertyRecord");
 			return ["status" => "Success", "id" => $propertyRecord->getId()];
 		} catch (Exception $exception) {
-			$this->logger->error("Failed to successfully add PropertyRecord. Error: " . $exception->getMessage());
-			return ["status" => "Error", "message" => "Error: Failed to add PropertyRecord"];
+			$this->logger->error(Messages::PROPERTY_RECORD_ADD_FAILURE . " Error: " . $exception->getMessage());
+			return ["status" => "Error", "message" => Messages::PROPERTY_RECORD_ADD_FAILURE];
 		}
 	}
 
@@ -331,17 +332,17 @@ class PropertyRecordsService extends BaseService
 			$propertyRecord = $this->repository->findOneBy(['id' => $id]);
 
 			if ($propertyRecord === null)
-				return ["status" => "Error", "message" => "No PropertyRecord for given id=$id"];
+				return ["status" => "Error", "message" => Messages::NO_PROPERTY_RECORD_FOUND . " for given id=$id"];
 
 			$imageUrl = $propertyRecord->getImageUrl();
 
 			if ($imageUrl === null)
-				return ["status" => "Error", "message" => "No image found for PropertyRecord id=$id"];
+				return ["status" => "Error", "message" => Messages::NO_IMAGE_FOUND . " for PropertyRecord id=$id"];
 
 			return ["status" => "Success", "message" => $propertyRecord->getImageUrl()];
 		} catch (Exception $exception) {
-			$this->logger->error("Failed to find PropteryRecord with id = $id. Error: " . $exception->getMessage());
-			return ["status" => "Error", "message" => "Error: Failed to find PropertyRecord with id = $id"];
+			$this->logger->error(Messages::NO_PROPERTY_RECORD_FOUND . " with id = $id. Error: " . $exception->getMessage());
+			return ["status" => "Error", "message" => Messages::NO_PROPERTY_RECORD_FOUND . " with id = $id"];
 		}
 	}
 }

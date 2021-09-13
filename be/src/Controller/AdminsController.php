@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Service\AdminsService;
+use App\Utils\Messages;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Response;
@@ -35,7 +36,7 @@ class AdminsController extends AbstractController
 		$currentAdminId = $currentAdmin->getId();
 
 		if ($id === $currentAdminId) {
-			return $this->json(["Error" => "An admin is not allowed to delete oneself"], Response::HTTP_BAD_REQUEST);
+			return $this->json(["Error" => Messages::ADMIN_NOT_ALLOWED_TO_DELETE_ONESELF], Response::HTTP_BAD_REQUEST);
 		}
 
 		$response = $adminsService->deleteAdminById($id);

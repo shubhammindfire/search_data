@@ -2,7 +2,8 @@
 
 namespace App\Service;
 
-use App\Constants;
+use App\Utils\Constants;
+use App\Utils\Messages;
 use App\Entity\Admins;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Persistence\ObjectRepository;
@@ -74,18 +75,18 @@ class AdminsService extends BaseService
 			 */
 			$admin = $this->repository->findOneBy(['id' => $id]);
 			if ($admin === null) {
-				$this->logger->error("Error: No admin found with id=$id");
-				return ["status" => "Error", "message" => "No admin found with id=$id"];
+				$this->logger->error("Error: " . Messages::NO_ADMIN_FOUND . " with id=$id");
+				return ["status" => "Error", "message" => Messages::NO_ADMIN_FOUND . " with id=$id"];
 			}
 			$em = $this->doctrine->getManager();
 			$em->remove($admin);
 			$em->flush();
 
-			$this->logger->info("Successfully deleted admin with id=$id");
+			$this->logger->info(Messages::ADMIN_DELETE_SUCCESS . " with id=$id");
 			return ["status" => "Success"];
 		} catch (Exception $exception) {
-			$this->logger->error("Failed to successfully delete admin with id=$id. Error: " . $exception->getMessage());
-			return ["status" => "Error", "message" => "Error: Failed to delete admin with id=$id"];
+			$this->logger->error(Messages::ADMIN_DELETE_FAILURE . " with id=$id. Error: " . $exception->getMessage());
+			return ["status" => "Error", "message" => "Error: " . Messages::ADMIN_DELETE_FAILURE . " with id=$id"];
 		}
 	}
 }

@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Service\PropertyRecordsService;
+use App\Utils\Messages;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -26,9 +27,9 @@ class PropertyRecordsController extends AbstractController
 		$destination = $this->getParameter('kernel.project_dir') . '/public/uploads';
 
 		if ($csvFile === null)
-			return $this->json(["Error" => "CSV file not found"], Response::HTTP_BAD_REQUEST);
+			return $this->json(["Error" => Messages::CSV_FILE_NOT_FOUND], Response::HTTP_BAD_REQUEST);
 		if ($zipFile === null)
-			return $this->json(["Error" => "ZIP file not found"], Response::HTTP_BAD_REQUEST);
+			return $this->json(["Error" => Messages::ZIP_FILE_NOT_FOUND], Response::HTTP_BAD_REQUEST);
 
 		$response = $propertyRecordsService->importData($csvFile, $zipFile, $destination);
 
